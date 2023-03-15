@@ -38,7 +38,7 @@ public class Game {
     }
 
     // valid move?
-    if (!sourcePiece.canMove(board, start, end)) {
+    if (!sourcePiece.legalMovePattern(board, start, end)) {
       log.info("Invalid move");
       return false;
     }

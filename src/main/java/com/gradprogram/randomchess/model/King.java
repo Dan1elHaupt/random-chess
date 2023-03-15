@@ -15,7 +15,7 @@ public class King extends Piece {
   }
 
   @Override
-  public boolean canMove(Board board, Square start, Square end) {
+  public boolean legalMovePattern(Board board, Square start, Square end) {
     if (invalidEndSquare(start, end)) {
       return false;
     }
