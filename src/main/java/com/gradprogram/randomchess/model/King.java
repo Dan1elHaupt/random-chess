@@ -23,7 +23,11 @@ public class King extends Piece {
     int xDiff = Math.abs(start.getX() - end.getX());
     int yDiff = Math.abs(start.getY() - end.getY());
     if (xDiff > 1 && yDiff == 0) {
-      return (canCastle(board, start, end) && kingNotInCheck(board, start, end));
+      if ((canCastle(board, start, end) && kingNotInCheck(board, start, end) && !castled)) {
+        castled = true;
+        return true;
+      }
+      return false;
     } else if (xDiff <= 1 && yDiff <= 1) {
       return kingNotInCheck(board, start, end);
     }
@@ -31,7 +35,7 @@ public class King extends Piece {
   }
 
   private boolean canCastle(Board board, Square start, Square end) {
-    // TODO logic here
+    // TODO logic
     return false;
   }
 

@@ -12,11 +12,14 @@ public abstract class Piece {
   }
 
   public boolean invalidEndSquare(Square start, Square end) {
-    // check for actual movement
-    if ((start.getX() == end.getX()) && (start.getY() == end.getY())) {
+    if (end.getPiece() == null) {
       return false;
     }
-    return end.getPiece().isWhite() == start.getPiece().isWhite();
+    // check for actual movement
+    if ((start.getX() == end.getX()) && (start.getY() == end.getY())) {
+      return true;
+    }
+    return (end.getPiece().isWhite() == start.getPiece().isWhite());
   }
 
   public boolean noPiecesInTheWay(Board board, Square start, Square end) {

@@ -15,6 +15,7 @@ public class Pawn extends Piece {
     int xDiff = Math.abs(start.getX() - end.getX());
     int yDiff = Math.abs(start.getY() - end.getY());
 
+    // TODO double move logic
     if ((xDiff == 0) && (yDiff == 1)) {
       return ((end.getPiece() == null) && kingNotInCheck(board, start, end));
     } else if ((xDiff == 1) && (yDiff == 1)) {
