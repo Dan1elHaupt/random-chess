@@ -9,6 +9,10 @@ group = 'com.gradProgram'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
+bootRun {
+    standardInput = System.in
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor

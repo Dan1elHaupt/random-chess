@@ -1,56 +1,43 @@
 package com.gradprogram.randomchess.client;
 
+import com.gradprogram.randomchess.model.GameStatus;
 import com.gradprogram.randomchess.model.Square;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class RunGame {
 
   public static void startGame() {
+    Square start, end;
+    boolean x;
+    int[] points;
 
     Game game = new Game();
+    Scanner scanner = new Scanner(System.in);
 
     game.getBoard().printBoard();
 
-    Square start = game.getBoard().getSquares()[1][0];
-    Square end = game.getBoard().getSquares()[2][2];
-    boolean x = game.makeMove(start, end);
-    System.out.println(x);
+    while (game.getGameStatus() == GameStatus.ACTIVE) {
+      String input = scanner.nextLine();
 
-    game.getBoard().printBoard();
+      if (input.equals("resign")) {
+        if (game.isWhiteToPlay()) {
+          game.setGameStatus(GameStatus.BLACK_WIN);
+        } else {
+          game.setGameStatus(GameStatus.WHITE_WIN);
+        }
+        break;
+      }
 
-    start = game.getBoard().getSquares()[0][6];
-    end = game.getBoard().getSquares()[0][5];
-    x = game.makeMove(start, end);
-    System.out.println(x);
+      points = Arrays.stream(input.split(" ")).mapToInt(Integer::parseInt).toArray();
 
-    game.getBoard().printBoard();
+      start = game.getBoard().getSquares()[points[0]][points[1]];
+      end = game.getBoard().getSquares()[points[2]][points[3]];
+      x = game.makeMove(start, end);
+      System.out.println(x);
 
-    start = game.getBoard().getSquares()[2][2];
-    end = game.getBoard().getSquares()[1][4];
-    x = game.makeMove(start, end);
-    System.out.println(x);
-
-    game.getBoard().printBoard();
-
-    start = game.getBoard().getSquares()[0][5];
-    end = game.getBoard().getSquares()[1][4];
-    x = game.makeMove(start, end);
-    System.out.println(x);
-
-    game.getBoard().printBoard();
-
-    start = game.getBoard().getSquares()[1][1];
-    end = game.getBoard().getSquares()[1][2];
-    x = game.makeMove(start, end);
-    System.out.println(x);
-
-    game.getBoard().printBoard();
-
-    start = game.getBoard().getSquares()[1][4];
-    end = game.getBoard().getSquares()[1][3];
-    x = game.makeMove(start, end);
-    System.out.println(x);
-
-    game.getBoard().printBoard();
+      game.getBoard().printBoard();
+    }
 
   }
 

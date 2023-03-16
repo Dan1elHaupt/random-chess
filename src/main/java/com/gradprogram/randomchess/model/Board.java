@@ -5,7 +5,7 @@ import lombok.Getter;
 public class Board {
 
   @Getter
-  private Square[][] squares;
+  private final Square[][] squares;
 
   public Board() {
     squares = new Square[8][8];
@@ -45,6 +45,7 @@ public class Board {
 
   public void printBoard() {
     for (int y = 7; y >= 0; y--) {
+      System.out.print(y + 1 + " ");
       for (int x = 0; x < 8; x++) {
         Piece p = squares[x][y].getPiece();
         if (p == null) {
@@ -70,6 +71,7 @@ public class Board {
       }
       System.out.println("|");
     }
+    System.out.println("   a  b  c  d  e  f  g  h");
   }
 
 }
