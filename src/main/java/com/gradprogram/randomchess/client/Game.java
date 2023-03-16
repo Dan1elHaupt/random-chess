@@ -43,10 +43,6 @@ public class Game {
       return false;
     }
 
-    // move piece from the stat box to end box
-    end.setPiece(start.getPiece());
-    start.setPiece(null);
-
     Piece destPiece = end.getPiece();
     if (destPiece instanceof King) {
       if (whiteToPlay) {
@@ -56,6 +52,19 @@ public class Game {
       else {
         setGameStatus(GameStatus.BLACK_WIN);
         System.out.println("Black Won!");
+      }
+    }
+
+    // move piece from the stat box to end box
+    end.setPiece(start.getPiece());
+    start.setPiece(null);
+
+    // update location of king
+    if (end.getPiece() instanceof King) {
+      if (end.getPiece().isWhite()) {
+        board.setWhiteKing(end);
+      } else {
+        board.setBlackKing(end);
       }
     }
 

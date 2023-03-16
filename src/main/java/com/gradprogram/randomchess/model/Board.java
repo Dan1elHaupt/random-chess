@@ -1,11 +1,18 @@
 package com.gradprogram.randomchess.model;
 
 import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class Board {
 
-  @Getter
   private final Square[][] squares;
+
+  @Setter
+  private Square whiteKing;
+
+  @Setter
+  private Square blackKing;
 
   public Board() {
     squares = new Square[8][8];
@@ -41,6 +48,8 @@ public class Board {
       squares[x][4] = new Square(null, x, 4);
       squares[x][5] = new Square(null, x, 5);
     }
+    whiteKing = squares[4][0];
+    blackKing = squares[4][7];
   }
 
   public void printBoard() {

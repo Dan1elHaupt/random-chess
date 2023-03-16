@@ -14,6 +14,6 @@ public class Knight extends Piece {
 
     int xDiff = Math.abs(start.getX() - end.getX());
     int yDiff = Math.abs(start.getY() - end.getY());
-    return (((xDiff * yDiff) == 2) && kingNotInCheck(board, start, end));
+    return (((xDiff * yDiff) == 2) && CheckLogic.notInCheckAfterMove(board, start, end));
   }
 }

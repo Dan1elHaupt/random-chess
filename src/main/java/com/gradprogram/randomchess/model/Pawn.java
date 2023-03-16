@@ -17,14 +17,14 @@ public class Pawn extends Piece {
 
     // TODO double move logic and dont allow backwards moves
     if ((xDiff == 0) && (yDiff == 1)) {
-      return ((end.getPiece() == null) && kingNotInCheck(board, start, end));
+      return ((end.getPiece() == null) && CheckLogic.notInCheckAfterMove(board, start, end));
     } else if ((xDiff == 1) && (yDiff == 1)) {
       if (end.getPiece() == null) {
         // TODO en passant logic here
         return false;
       }
       return ((end.getPiece().isWhite() != start.getPiece().isWhite())
-          && kingNotInCheck(board, start, end));
+          && CheckLogic.notInCheckAfterMove(board, start, end));
     }
     return false;
   }

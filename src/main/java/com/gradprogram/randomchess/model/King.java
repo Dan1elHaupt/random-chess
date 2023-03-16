@@ -23,13 +23,13 @@ public class King extends Piece {
     int xDiff = Math.abs(start.getX() - end.getX());
     int yDiff = Math.abs(start.getY() - end.getY());
     if (xDiff > 1 && yDiff == 0) {
-      if ((canCastle(board, start, end) && kingNotInCheck(board, start, end) && !castled)) {
+      if ((canCastle(board, start, end) && CheckLogic.notInCheckAfterKingMove(board, start, end) && !castled)) {
         castled = true;
         return true;
       }
       return false;
     } else if (xDiff <= 1 && yDiff <= 1) {
-      return kingNotInCheck(board, start, end);
+      return CheckLogic.notInCheckAfterKingMove(board, start, end);
     }
     return false;
   }

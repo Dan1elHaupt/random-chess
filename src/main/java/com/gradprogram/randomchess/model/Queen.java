@@ -16,7 +16,9 @@ public class Queen extends Piece {
     int yDiff = Math.abs(start.getY() - end.getY());
 
     if ((xDiff == 0) || (yDiff == 0) || (xDiff == yDiff)) {
-      return (noPiecesInTheWay(board, start, end) && kingNotInCheck(board, start, end));
+      if (noPiecesInTheWay(board, start, end)) {
+        return CheckLogic.notInCheckAfterMove(board, start, end);
+      }
     }
     return false;
   }

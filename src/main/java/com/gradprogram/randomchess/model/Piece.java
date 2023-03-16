@@ -61,11 +61,6 @@ public abstract class Piece {
     return true;
   }
 
-  public boolean kingNotInCheck(Board board, Square start, Square end) {
-    // TODO logic
-    return true;
-  }
-
   public abstract boolean legalMovePattern(Board board, Square start, Square end);
 
 }
