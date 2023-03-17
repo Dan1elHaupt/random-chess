@@ -1,15 +1,19 @@
 package com.gradprogram.randomchess.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@AllArgsConstructor
 public abstract class Piece {
 
   private final boolean white;
 
-  public Piece(boolean white) {
-    this.white = white;
-  }
+  @Setter
+  private int x;
+  @Setter
+  private int y;
 
   public boolean invalidEndSquare(Square start, Square end) {
     if (end.getPiece() == null) {

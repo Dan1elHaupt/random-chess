@@ -1,5 +1,7 @@
 package com.gradprogram.randomchess.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +10,10 @@ public class Board {
 
   private final Square[][] squares;
 
+  public List<Piece> whitePieces;
+
+  public List<Piece> blackPieces;
+
   @Setter
   private Square whiteKing;
 
@@ -15,39 +21,44 @@ public class Board {
   private Square blackKing;
 
   public Board() {
+    whitePieces = new ArrayList<>();
+    blackPieces = new ArrayList<>();
     squares = new Square[8][8];
 
     // White pieces
-    squares[0][0] = new Square(new Rook(true), 0, 0);
-    squares[1][0] = new Square(new Knight(true), 1, 0);
-    squares[2][0] = new Square(new Bishop(true), 2, 0);
-    squares[3][0] = new Square(new Queen(true), 3, 0);
-    squares[4][0] = new Square(new King(true), 4, 0);
-    squares[5][0] = new Square(new Bishop(true), 5, 0);
-    squares[6][0] = new Square(new Knight(true), 6, 0);
-    squares[7][0] = new Square(new Rook(true), 7, 0);
+    whitePieces.add(new Rook(true, 0, 0));
+    whitePieces.add(new Knight(true, 1, 0));
+    whitePieces.add(new Bishop(true, 2, 0));
+    whitePieces.add(new Queen(true, 3, 0));
+    whitePieces.add(new King(true, 4, 0));
+    whitePieces.add(new Bishop(true, 5, 0));
+    whitePieces.add(new Knight(true, 6, 0));
+    whitePieces.add(new Rook(true, 7, 0));
 
     // Black pieces
-    squares[0][7] = new Square(new Rook(false), 0, 7);
-    squares[1][7] = new Square(new Knight(false), 1, 7);
-    squares[2][7] = new Square(new Bishop(false), 2, 7);
-    squares[3][7] = new Square(new Queen(false), 3, 7);
-    squares[4][7] = new Square(new King(false), 4, 7);
-    squares[5][7] = new Square(new Bishop(false), 5, 7);
-    squares[6][7] = new Square(new Knight(false), 6, 7);
-    squares[7][7] = new Square(new Rook(false), 7, 7);
+    blackPieces.add(new Rook(false, 0, 7));
+    blackPieces.add(new Knight(false, 1, 7));
+    blackPieces.add(new Bishop(false, 2, 7));
+    blackPieces.add(new Queen(false, 3, 7));
+    blackPieces.add(new King(false, 4, 7));
+    blackPieces.add(new Bishop(false, 5, 7));
+    blackPieces.add(new Knight(false, 6, 7));
+    blackPieces.add(new Rook(false, 7, 7));
 
     for (int x = 0; x < 8; x++) {
-      // Pawns
-      squares[x][1] = new Square(new Pawn(true), x, 1);
-      squares[x][6] = new Square(new Pawn(false), x, 6);
+      whitePieces.add(new Pawn(true, x, 1));
+      blackPieces.add(new Pawn(false, x, 6));
 
-      // Empty squares
+      squares[x][0] = new Square(whitePieces.get(x), x, 0);
+      squares[x][1] = new Square(whitePieces.get(x + 8), x, 1);
       squares[x][2] = new Square(null, x, 2);
       squares[x][3] = new Square(null, x, 3);
       squares[x][4] = new Square(null, x, 4);
       squares[x][5] = new Square(null, x, 5);
+      squares[x][6] = new Square(blackPieces.get(x + 8), x, 6);
+      squares[x][7] = new Square(blackPieces.get(x), x, 7);
     }
+
     whiteKing = squares[4][0];
     blackKing = squares[4][7];
   }
@@ -89,7 +100,7 @@ public class Board {
 
     end.setPiece(king);
     start.setPiece(null);
-    boolean notInCheck =  notInCheck(end);
+    boolean notInCheck = notInCheck(end);
     start.setPiece(king);
     end.setPiece(oldEndPiece);
 
@@ -100,31 +111,36 @@ public class Board {
     Square king;
     Piece oldEndPiece = end.getPiece();
     Piece movedPiece = start.getPiece();
+    movedPiece.setX(end.getX());
+    movedPiece.setY(end.getY());
 
     if (movedPiece.isWhite()) {
       king = this.getWhiteKing();
     } else {
       king = this.getBlackKing();
     }
-    end.setPiece(start.getPiece());
+    end.setPiece(movedPiece);
     start.setPiece(null);
     boolean notInCheck = notInCheck(king);
-    start.setPiece(end.getPiece());
+    movedPiece.setX(start.getX());
+    movedPiece.setY(start.getY());
+    start.setPiece(movedPiece);
     end.setPiece(oldEndPiece);
 
     return notInCheck;
   }
 
   private boolean notInCheck(Square king) {
-    boolean kingIsWhite = king.getPiece().isWhite();
-    for (Square[] squareRow : this.getSquares()) {
-      for (Square square : squareRow) {
-        Piece piece = square.getPiece();
-        if ((piece != null) && (piece.isWhite() != kingIsWhite)) {
-          if (piece.legalMovePattern(this, square, king)) {
-            return false;
-          }
-        }
+    List<Piece> opponentPieces;
+    if (king.getPiece().isWhite()) {
+      opponentPieces = blackPieces;
+    } else {
+      opponentPieces = whitePieces;
+    }
+    for (Piece piece : opponentPieces) {
+      Square square = this.getSquares()[piece.getX()][piece.getY()];
+      if (piece.legalMovePattern(this, square, king)) {
+        return false;
       }
     }
     return true;

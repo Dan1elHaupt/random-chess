@@ -2,8 +2,8 @@ package com.gradprogram.randomchess.model;
 
 public class Queen extends Piece {
 
-  public Queen(boolean white) {
-    super(white);
+  public Queen(boolean white, int x, int y) {
+    super(white, x, y);
   }
 
   @Override

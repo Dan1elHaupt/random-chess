@@ -2,8 +2,8 @@ package com.gradprogram.randomchess.model;
 
 public class Pawn extends Piece {
 
-  public Pawn(boolean white) {
-    super(white);
+  public Pawn(boolean white, int x, int y) {
+    super(white, x, y);
   }
 
   @Override

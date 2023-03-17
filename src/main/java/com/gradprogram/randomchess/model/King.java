@@ -9,8 +9,8 @@ public class King extends Piece {
 
   private boolean castled;
 
-  public King(boolean white) {
-    super(white);
+  public King(boolean white, int x, int y) {
+    super(white, x, y);
     this.castled = false;
   }
 

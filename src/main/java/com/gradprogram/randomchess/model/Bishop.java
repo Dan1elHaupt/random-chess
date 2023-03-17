@@ -2,8 +2,8 @@ package com.gradprogram.randomchess.model;
 
 public class Bishop extends Piece {
 
-  public Bishop(boolean white) {
-    super(white);
+  public Bishop(boolean white, int x, int y) {
+    super(white, x ,y);
   }
 
   @Override

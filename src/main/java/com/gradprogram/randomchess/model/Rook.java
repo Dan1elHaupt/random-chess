@@ -2,8 +2,8 @@ package com.gradprogram.randomchess.model;
 
 public class Rook extends Piece {
 
-  public Rook(boolean white) {
-    super(white);
+  public Rook(boolean white, int x, int y) {
+    super(white, x, y);
   }
 
   @Override

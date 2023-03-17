@@ -5,6 +5,7 @@ import com.gradprogram.randomchess.model.GameStatus;
 import com.gradprogram.randomchess.model.King;
 import com.gradprogram.randomchess.model.Piece;
 import com.gradprogram.randomchess.model.Square;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -55,9 +56,20 @@ public class Game {
       }
     }
 
+    // remove taken piece from list
+    if (end.getPiece() != null) {
+      if (whiteToPlay) {
+        board.blackPieces.remove(end.getPiece());
+      } else {
+        board.whitePieces.remove(end.getPiece());
+      }
+    }
+
     // move piece from the stat box to end box
     end.setPiece(start.getPiece());
     start.setPiece(null);
+    end.getPiece().setX(end.getX());
+    end.getPiece().setY(end.getY());
 
     // update location of king
     if (end.getPiece() instanceof King) {
