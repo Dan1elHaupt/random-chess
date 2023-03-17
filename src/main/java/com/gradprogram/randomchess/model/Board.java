@@ -83,4 +83,51 @@ public class Board {
     System.out.println("   a  b  c  d  e  f  g  h");
   }
 
+  public boolean notInCheckAfterKingMove(Square start, Square end) {
+    Piece king = start.getPiece();
+    Piece oldEndPiece = end.getPiece();
+
+    end.setPiece(king);
+    start.setPiece(null);
+    boolean notInCheck =  notInCheck(end);
+    start.setPiece(king);
+    end.setPiece(oldEndPiece);
+
+    return notInCheck;
+  }
+
+  public boolean notInCheckAfterMove(Square start, Square end) {
+    Square king;
+    Piece oldEndPiece = end.getPiece();
+    Piece movedPiece = start.getPiece();
+
+    if (movedPiece.isWhite()) {
+      king = this.getWhiteKing();
+    } else {
+      king = this.getBlackKing();
+    }
+    end.setPiece(start.getPiece());
+    start.setPiece(null);
+    boolean notInCheck = notInCheck(king);
+    start.setPiece(end.getPiece());
+    end.setPiece(oldEndPiece);
+
+    return notInCheck;
+  }
+
+  private boolean notInCheck(Square king) {
+    boolean kingIsWhite = king.getPiece().isWhite();
+    for (Square[] squareRow : this.getSquares()) {
+      for (Square square : squareRow) {
+        Piece piece = square.getPiece();
+        if ((piece != null) && (piece.isWhite() != kingIsWhite)) {
+          if (piece.legalMovePattern(this, square, king)) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
+
 }

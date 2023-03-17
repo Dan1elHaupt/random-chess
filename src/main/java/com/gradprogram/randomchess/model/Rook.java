@@ -17,7 +17,7 @@ public class Rook extends Piece {
 
     if ((xDiff == 0) ^ (yDiff == 0)) {
       return (noPiecesInTheWay(board, start, end) &&
-          CheckLogic.notInCheckAfterMove(board, start, end));
+          board.notInCheckAfterMove(start, end));
     }
     return false;
   }

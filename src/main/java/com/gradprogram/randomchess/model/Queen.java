@@ -17,7 +17,7 @@ public class Queen extends Piece {
 
     if ((xDiff == 0) || (yDiff == 0) || (xDiff == yDiff)) {
       if (noPiecesInTheWay(board, start, end)) {
-        return CheckLogic.notInCheckAfterMove(board, start, end);
+        return board.notInCheckAfterMove(start, end);
       }
     }
     return false;

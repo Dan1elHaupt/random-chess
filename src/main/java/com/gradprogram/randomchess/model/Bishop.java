@@ -16,7 +16,7 @@ public class Bishop extends Piece {
     int yDiff = Math.abs(start.getY() - end.getY());
 
     if (xDiff == yDiff) {
-      return (noPiecesInTheWay(board, start, end) && CheckLogic.notInCheckAfterMove(board, start, end));
+      return (noPiecesInTheWay(board, start, end) && board.notInCheckAfterMove(start, end));
     }
     return false;
   }
