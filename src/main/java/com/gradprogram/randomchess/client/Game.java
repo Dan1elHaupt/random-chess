@@ -1,10 +1,12 @@
 package com.gradprogram.randomchess.client;
 
-import com.gradprogram.randomchess.model.Board;
+import com.gradprogram.randomchess.model.board.Board;
 import com.gradprogram.randomchess.model.GameStatus;
-import com.gradprogram.randomchess.model.King;
-import com.gradprogram.randomchess.model.Piece;
-import com.gradprogram.randomchess.model.Square;
+import com.gradprogram.randomchess.model.board.Point;
+import com.gradprogram.randomchess.model.movement.Valid;
+import com.gradprogram.randomchess.model.piece.King;
+import com.gradprogram.randomchess.model.piece.Piece;
+import com.gradprogram.randomchess.model.board.Square;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -24,30 +26,19 @@ public class Game {
     gameStatus = GameStatus.ACTIVE;
   }
 
-  public boolean makeMove(Square start, Square end) {
-
-    Piece sourcePiece = start.getPiece();
-    if (sourcePiece == null) {
-      log.info("No piece selected for move");
+  public boolean makeMove(Point start, Point end) {
+    if (!Valid.validSquareLocation(start) || !Valid.validSquareLocation(end)) {
       return false;
     }
 
-    if (sourcePiece.isWhite() != whiteToPlay) {
-      log.info("Not this players move");
-      return false;
-    }
-
-    // valid move?
-    if (!sourcePiece.legalMovePattern(board, start, end)) {
+    if (!board.isLegalMove(start, end, whiteToPlay)) {
       log.info("Invalid move");
       return false;
     }
+    board.getSquare(end).setPiece(board.getPiece(start));
+    board.getSquare(start).setPiece(null);
 
-    // move piece from the stat box to end box
-    end.setPiece(start.getPiece());
-    start.setPiece(null);
-
-    Piece destPiece = end.getPiece();
+    Piece destPiece = board.getPiece(end);
     if (destPiece instanceof King) {
       if (whiteToPlay) {
         setGameStatus(GameStatus.WHITE_WIN);

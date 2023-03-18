@@ -1,14 +1,15 @@
 package com.gradprogram.randomchess.client;
 
 import com.gradprogram.randomchess.model.GameStatus;
-import com.gradprogram.randomchess.model.Square;
+import com.gradprogram.randomchess.model.board.Point;
+import com.gradprogram.randomchess.model.board.Square;
 import java.util.Arrays;
 import java.util.Scanner;
 
 public class RunGame {
 
   public static void startGame() {
-    Square start, end;
+    Point start, end;
     boolean x;
     int[] points;
 
@@ -31,8 +32,8 @@ public class RunGame {
 
       points = Arrays.stream(input.split(" ")).mapToInt(Integer::parseInt).toArray();
 
-      start = game.getBoard().getSquares()[points[0]][points[1]];
-      end = game.getBoard().getSquares()[points[2]][points[3]];
+      start = new Point(points[0], points[1]);
+      end = new Point(points[2], points[3]);
       x = game.makeMove(start, end);
       System.out.println(x);
 
