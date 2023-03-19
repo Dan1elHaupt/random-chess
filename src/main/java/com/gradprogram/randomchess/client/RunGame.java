@@ -2,10 +2,18 @@ package com.gradprogram.randomchess.client;
 
 import com.gradprogram.randomchess.model.GameStatus;
 import com.gradprogram.randomchess.model.Square;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class RunGame {
+
+  private static int[] coordinateConverter(String input) {
+    char[] letterCoordinates = input.toCharArray();
+
+    int[] numberCoordinates = {letterCoordinates[0] - 97, Character.getNumericValue(letterCoordinates[1]) - 1,
+      letterCoordinates[3] - 97, Character.getNumericValue(letterCoordinates[4]) - 1};
+
+    return numberCoordinates;
+  };
 
   public static void startGame() {
     Square start, end;
@@ -29,7 +37,7 @@ public class RunGame {
         break;
       }
 
-      points = Arrays.stream(input.split(" ")).mapToInt(Integer::parseInt).toArray();
+      points = coordinateConverter(input);
 
       start = game.getBoard().getSquares()[points[0]][points[1]];
       end = game.getBoard().getSquares()[points[2]][points[3]];
@@ -38,6 +46,8 @@ public class RunGame {
 
       game.getBoard().printBoard();
     }
+
+    scanner.close();
 
   }
 
