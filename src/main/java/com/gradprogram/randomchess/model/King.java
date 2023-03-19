@@ -15,7 +15,7 @@ public class King extends Piece {
   }
 
   @Override
-  public boolean legalMovePattern(Board board, Square start, Square end) {
+  public boolean legalMovePattern(Board board, Square start, Square end, boolean skipChecks) {
     if (invalidEndSquare(start, end)) {
       return false;
     }
@@ -29,7 +29,7 @@ public class King extends Piece {
       }
       return false;
     } else if (xDiff <= 1 && yDiff <= 1) {
-      return kingNotInCheck(board, start, end);
+      return skipChecks || kingNotInCheck(board, start, end);
     }
     return false;
   }

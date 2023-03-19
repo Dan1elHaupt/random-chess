@@ -7,7 +7,7 @@ public class Rook extends Piece {
   }
 
   @Override
-  public boolean legalMovePattern(Board board, Square start, Square end) {
+  public boolean legalMovePattern(Board board, Square start, Square end, boolean skipChecks) {
     if (invalidEndSquare(start, end)) {
       return false;
     }
@@ -16,7 +16,7 @@ public class Rook extends Piece {
     int yDiff = Math.abs(start.getY() - end.getY());
 
     if ((xDiff == 0) ^ (yDiff == 0)) {
-      return (noPiecesInTheWay(board, start, end) && kingNotInCheck(board, start, end));
+      return (noPiecesInTheWay(board, start, end) && (skipChecks || kingNotInCheck(board, start, end)));
     }
     return false;
   }

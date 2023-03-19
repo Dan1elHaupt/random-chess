@@ -1,11 +1,26 @@
 package com.gradprogram.randomchess.model;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Board {
 
   @Getter
   private final Square[][] squares;
+
+  public Square getKingSquare(boolean white) {
+    for (int x = 0; x < 8; x++) {
+      for (int y = 0; y < 8; y++) {
+        Piece candidateKing = this.squares[x][y].getPiece();
+        if (candidateKing instanceof King && candidateKing.isWhite() == white) {
+          return this.squares[x][y];
+        }
+      }
+    }
+    log.error("ERROR: King square not found");
+    return this.squares[0][0];
+  };
 
   public Board() {
     squares = new Square[8][8];

@@ -7,7 +7,7 @@ public class Queen extends Piece {
   }
 
   @Override
-  public boolean legalMovePattern(Board board, Square start, Square end) {
+  public boolean legalMovePattern(Board board, Square start, Square end, boolean skipChecks) {
     if (invalidEndSquare(start, end)) {
       return false;
     }
@@ -16,8 +16,9 @@ public class Queen extends Piece {
     int yDiff = Math.abs(start.getY() - end.getY());
 
     if ((xDiff == 0) || (yDiff == 0) || (xDiff == yDiff)) {
-      return (noPiecesInTheWay(board, start, end) && kingNotInCheck(board, start, end));
+      return (noPiecesInTheWay(board, start, end) && (skipChecks || kingNotInCheck(board, start, end)));
     }
+    System.out.println("illegal");
     return false;
   }
 }

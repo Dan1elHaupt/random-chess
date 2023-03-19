@@ -7,7 +7,7 @@ public class Pawn extends Piece {
   }
 
   @Override
-  public boolean legalMovePattern(Board board, Square start, Square end) {
+  public boolean legalMovePattern(Board board, Square start, Square end, boolean skipChecks) {
     if (invalidEndSquare(start, end)) {
       return false;
     }
@@ -24,7 +24,7 @@ public class Pawn extends Piece {
         return false;
       }
       return ((end.getPiece().isWhite() != start.getPiece().isWhite())
-          && kingNotInCheck(board, start, end));
+          && (skipChecks || kingNotInCheck(board, start, end)));
     }
     return false;
   }

@@ -7,13 +7,13 @@ public class Knight extends Piece {
   }
 
   @Override
-  public boolean legalMovePattern(Board board, Square start, Square end) {
+  public boolean legalMovePattern(Board board, Square start, Square end, boolean skipChecks) {
     if (invalidEndSquare(start, end)) {
       return false;
     }
 
     int xDiff = Math.abs(start.getX() - end.getX());
     int yDiff = Math.abs(start.getY() - end.getY());
-    return (((xDiff * yDiff) == 2) && kingNotInCheck(board, start, end));
+    return (((xDiff * yDiff) == 2) && (skipChecks || kingNotInCheck(board, start, end)));
   }
 }

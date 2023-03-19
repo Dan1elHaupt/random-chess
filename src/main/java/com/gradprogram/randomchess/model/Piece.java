@@ -1,7 +1,9 @@
 package com.gradprogram.randomchess.model;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 public abstract class Piece {
 
@@ -62,10 +64,33 @@ public abstract class Piece {
   }
 
   public boolean kingNotInCheck(Board board, Square start, Square end) {
-    // TODO logic
+    Piece movingPiece = start.getPiece();
+    Piece capturedPiece = end.getPiece();
+    end.setPiece(movingPiece);
+    start.setPiece(null);
+
+    Square kingSquare = board.getKingSquare(this.white);
+
+    for (int x = 0; x < 8; x++) {
+      for (int y = 0; y < 8; y++) {
+
+        Piece candidatePiece = board.getSquares()[x][y].getPiece();
+        if ((candidatePiece != null) && (candidatePiece.isWhite() != this.white) && !(candidatePiece instanceof King)) {
+          if (candidatePiece.legalMovePattern(board, new Square(candidatePiece, x, y), kingSquare, true)) {
+            log.info("Must stop check!");
+
+            end.setPiece(capturedPiece);
+            start.setPiece(movingPiece);
+            return false;
+          }
+        }
+      }
+    }
+    end.setPiece(capturedPiece);
+    start.setPiece(movingPiece);
     return true;
   }
 
-  public abstract boolean legalMovePattern(Board board, Square start, Square end);
+  public abstract boolean legalMovePattern(Board board, Square start, Square end, boolean skipChecks);
 
 }
