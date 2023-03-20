@@ -98,9 +98,13 @@ public class Board {
     Piece king = start.getPiece();
     Piece oldEndPiece = end.getPiece();
 
+    king.setX(end.getX());
+    king.setY(end.getY());
     end.setPiece(king);
     start.setPiece(null);
     boolean notInCheck = notInCheck(end);
+    king.setX(start.getX());
+    king.setY(start.getY());
     start.setPiece(king);
     end.setPiece(oldEndPiece);
 
@@ -111,14 +115,15 @@ public class Board {
     Square king;
     Piece oldEndPiece = end.getPiece();
     Piece movedPiece = start.getPiece();
-    movedPiece.setX(end.getX());
-    movedPiece.setY(end.getY());
 
     if (movedPiece.isWhite()) {
       king = this.getWhiteKing();
     } else {
       king = this.getBlackKing();
     }
+
+    movedPiece.setX(end.getX());
+    movedPiece.setY(end.getY());
     end.setPiece(movedPiece);
     start.setPiece(null);
     boolean notInCheck = notInCheck(king);
