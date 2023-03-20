@@ -1,5 +1,6 @@
-package com.gradprogram.randomchess.model;
+package com.gradprogram.randomchess.model.board;
 
+import com.gradprogram.randomchess.model.piece.Piece;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,4 +14,8 @@ public class Square {
   private int x;
   private int y;
 
+  @Override
+  public String toString() {
+    return piece == null ? "|  " : "|" + piece;
+  }
 }
