@@ -195,9 +195,10 @@ public class Board {
     } else {
       opponentPieces = whitePieces;
     }
-    for (Piece piece : opponentPieces) {
+    for (int i = 0; i < opponentPieces.size(); i++) {
+      Piece piece = opponentPieces.get(i);
       Point start = new Point(piece.getX(), piece.getY());
-      if (piece.legalMovePattern(start, king, this)) {
+      if (this.isLegalMove(start, king, piece.isWhite())) {
         log.info(this.getPiece(king).isWhite() ? "White in check" : "Black in check");
         return false;
       }
