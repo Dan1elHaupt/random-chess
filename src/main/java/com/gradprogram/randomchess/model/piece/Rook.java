@@ -7,16 +7,19 @@ import com.gradprogram.randomchess.model.movement.Valid;
 
 public class Rook extends Piece {
 
-  public Rook(boolean white) {
-    super(white);
+  public Rook(boolean white, int x, int y) {
+    super(white, x, y);
   }
 
   @Override
-  public boolean legalMovePattern(Point start, Point end) {
+  public boolean legalMovePattern(Point start, Point end, Board board) {
     if (!Valid.validSquareLocation(end)) {
       return false;
     }
-    return Valid.legalHorizontalOrVerticalMove(start, end);
+    if (Valid.legalHorizontalOrVerticalMove(start, end)) {
+      return board.notInCheckAfterMove(start, end);
+    }
+    return false;
   }
 
   @Override

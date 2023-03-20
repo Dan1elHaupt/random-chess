@@ -43,8 +43,7 @@ public class RunGame {
 
       start = new Point(points[0], points[1]);
       end = new Point(points[2], points[3]);
-      x = game.makeMove(start, end);
-      System.out.println(x);
+      game.makeMove(start, end);
 
       game.getBoard().printBoard();
     }

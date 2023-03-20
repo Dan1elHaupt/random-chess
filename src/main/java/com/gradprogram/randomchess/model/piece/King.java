@@ -14,20 +14,20 @@ public class King extends Piece {
   private boolean castled;
   private boolean hasMoved;
 
-  public King(boolean white) {
-    super(white);
+  public King(boolean white, int x, int y) {
+    super(white, x, y);
     this.castled = false;
   }
 
   @Override
-  public boolean legalMovePattern(Point start, Point end) {
+  public boolean legalMovePattern(Point start, Point end, Board board) {
     if (!Valid.validSquareLocation(end)) {
       return false;
     }
     int xDiff = Math.abs(start.x() - end.x());
     int yDiff = Math.abs(start.y() - end.y());
     if (xDiff <= 1 && yDiff <= 1) {
-      return true;
+      return board.notInCheckAfterMove(start, end);
     } else {
 //      TODO Castling
     }

@@ -7,16 +7,19 @@ import com.gradprogram.randomchess.model.movement.Valid;
 
 public class Bishop extends Piece {
 
-  public Bishop(boolean white) {
-    super(white);
+  public Bishop(boolean white, int x, int y) {
+    super(white, x, y);
   }
 
   @Override
-  public boolean legalMovePattern( Point start, Point end) {
+  public boolean legalMovePattern( Point start, Point end, Board board) {
     if (!Valid.validSquareLocation(end)) {
       return false;
     }
-    return Valid.legalDiagonalMove(start, end);
+    if (Valid.legalDiagonalMove(start, end)) {
+      return board.notInCheckAfterMove(start, end);
+    }
+    return false;
   }
 
   @Override

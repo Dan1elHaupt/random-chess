@@ -36,36 +36,26 @@ public class Game {
       return false;
     }
 
-    Piece destPiece = end.getPiece();
-    if (destPiece instanceof King) {
-      if (whiteToPlay) {
-        setGameStatus(GameStatus.WHITE_WIN);
-        System.out.println("White Won!");
-      }
-      else {
-        setGameStatus(GameStatus.BLACK_WIN);
-        System.out.println("Black Won!");
-      }
-    }
-
     // remove taken piece from list
-    if (end.getPiece() != null) {
+    Piece takenPiece = board.getSquare(end).getPiece();
+    if (takenPiece != null) {
       if (whiteToPlay) {
-        board.blackPieces.remove(end.getPiece());
+        board.blackPieces.remove(takenPiece);
       } else {
-        board.whitePieces.remove(end.getPiece());
+        board.whitePieces.remove(takenPiece);
       }
     }
 
     // move piece from the stat box to end box
-    end.setPiece(start.getPiece());
-    start.setPiece(null);
-    end.getPiece().setX(end.getX());
-    end.getPiece().setY(end.getY());
+    board.getSquare(end).setPiece(board.getPiece(start));
+    board.getSquare(start).setPiece(null);
+    board.getPiece(end).setX(end.x());
+    board.getPiece(end).setY(end.y());
 
     // update location of king
-    if (end.getPiece() instanceof King) {
-      if (end.getPiece().isWhite()) {
+    Piece destPiece = board.getPiece(end);
+    if (destPiece instanceof King) {
+      if (destPiece.isWhite()) {
         board.setWhiteKing(end);
       } else {
         board.setBlackKing(end);
