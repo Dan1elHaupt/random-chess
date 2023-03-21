@@ -66,31 +66,73 @@ public class Board {
 
     public boolean isLegalMove(Point start, Point end, boolean isWhite) {
         Piece startingPosition = getPiece(start);
-        Piece endingPosition = getPiece(end);
-        if (startingPosition == null) {
-            return false;
-        }
-        if (startingPosition.isWhite() != isWhite) {
+        if (startingPosition == null || startingPosition.isWhite() != isWhite) {
             return false;
         }
         if (startingPosition.legalMovePattern(start, end)) {
-            if (!(startingPosition instanceof Knight) && piecesInTheWay(start, end)) {
-                return false;
+            if (startingPosition instanceof King) {
+                return canKingMove(start, end);
+            } else if (startingPosition instanceof Pawn) {
+                return canPawnMove(start, end);
+            } else if (startingPosition instanceof Knight) {
+                return canKnightMove(start, end);
+            } else {
+                return canMove(start, end);
             }
-            if (startingPosition instanceof Pawn) {
-                if (Valid.legalDiagonalMove(start, end) && endingPosition == null) {
-                    return false;
-                } else {
-                    return endingPosition == null;
-                }
-            }
-            if (endingPosition != null) {
-                return !(endingPosition instanceof King) || endingPosition.isWhite() != startingPosition.isWhite();
-            }
-            return true;
         }
         return false;
+    }
 
+    private boolean canKnightMove(Point start, Point end) {
+//        TODO check logic
+        Piece endLocationPiece = getPiece(end);
+        boolean endPieceLocationAccessible = endLocationPiece == null ||
+                (endLocationPiece.isWhite() != getPiece(start).isWhite() && !(endLocationPiece instanceof King));
+        return  endPieceLocationAccessible;
+    }
+
+    private boolean canKingMove(Point start, Point end) {
+        if (castlingMove(start, end)) {
+            final int rookX;
+            if (end.x() == 1) {
+                rookX = 0;
+            } else {
+                rookX = 7;
+            }
+            if (!(squares[rookX][start.y()].getPiece() instanceof Rook && squares[rookX][start.y()].getPiece().isHasMoved())) {
+                return false;
+            }
+//                        TODO getcheck logic here
+            if (Point.getBetween(start, end).map(e -> true).reduce(false, (a, b) -> a || b)) {
+                return false;
+            }
+        }
+        return canMove(start, end);
+
+    }
+
+    private boolean canPawnMove(Point start, Point end) {
+        if (Valid.legalDiagonalMove(start, end)) {
+//            TODO add en pessant in here
+            Piece endLocation = getPiece(end);
+            return endLocation != null && endLocation.isWhite() != getPiece(start).isWhite() && !(endLocation instanceof King);
+        } else {
+            return !piecesInTheWay(start, end) && getPiece(end) == null;
+//            TODO add check in here
+        }
+
+    }
+
+    private boolean canMove(Point start, Point end) {
+//        TODO add check
+        Piece endLocationPiece = getPiece(end);
+        boolean endPieceLocationAccessible = endLocationPiece == null ||
+                (endLocationPiece.isWhite() != getPiece(start).isWhite() && !(endLocationPiece instanceof King));
+        return !piecesInTheWay(start, end) && endPieceLocationAccessible;
+    }
+
+    private boolean castlingMove(Point start, Point end) {
+        return Math.abs(start.x() - end.x()) != 1;
     }
 
     private boolean piecesInTheWay(Point start, Point end) {

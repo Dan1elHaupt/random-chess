@@ -37,6 +37,7 @@ public class Game {
     }
     board.getSquare(end).setPiece(board.getPiece(start));
     board.getSquare(start).setPiece(null);
+    board.getPiece(start).setHasMoved(true);
 
     Piece destPiece = board.getPiece(end);
     if (destPiece instanceof King) {
