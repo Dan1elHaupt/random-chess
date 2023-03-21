@@ -64,7 +64,7 @@ public class Board {
         System.out.println("   a  b  c  d  e  f  g  h");
     }
 
-    public boolean isLegalMove(Point start, Point end, boolean isWhite) {
+    public boolean isLegalMove(Point start, Point end, boolean isWhite, Move previousMove) {
         Piece startingPosition = getPiece(start);
         if (startingPosition == null || startingPosition.isWhite() != isWhite) {
             return false;
@@ -73,7 +73,7 @@ public class Board {
             if (startingPosition instanceof King) {
                 return canKingMove(start, end);
             } else if (startingPosition instanceof Pawn) {
-                return canPawnMove(start, end);
+                return canPawnMove(start, end, previousMove);
             } else if (startingPosition instanceof Knight) {
                 return canKnightMove(start, end);
             } else {
@@ -111,16 +111,34 @@ public class Board {
 
     }
 
-    private boolean canPawnMove(Point start, Point end) {
+    private boolean canPawnMove(Point start, Point end, Move previousMove) {
         if (Valid.legalDiagonalMove(start, end)) {
-//            TODO add en pessant in here
-            Piece endLocation = getPiece(end);
-            return endLocation != null && endLocation.isWhite() != getPiece(start).isWhite() && !(endLocation instanceof King);
+            Piece endLocationPiece = getPiece(end);
+            if (endLocationPiece == null) {
+                return enPassantMove(start, end, previousMove);
+            } else {
+                return endLocationPiece.isWhite() != getPiece(start).isWhite() && !(endLocationPiece instanceof King);
+            }
         } else {
             return !piecesInTheWay(start, end) && getPiece(end) == null;
 //            TODO add check in here
         }
+    }
+    
+    private boolean enPassantMove(Point start, Point end, Move previousMove) {
+        return previousMovePawnTwoForward(previousMove) && startNextEndBehindPawnTake(start, end, previousMove);
+    }
 
+    private boolean startNextEndBehindPawnTake(Point start, Point end, Move previousMove) {
+        Point previousMoveEnd = previousMove.end();
+        boolean starrNextTo = previousMoveEnd.y() == start.y() && Math.abs(previousMoveEnd.x() - start.x()) == 1;
+        boolean endBehind = previousMoveEnd.x() == end.x() && Math.abs(previousMoveEnd.y() - end.y()) == 1;
+        return starrNextTo && endBehind;
+    }
+
+    private boolean previousMovePawnTwoForward(Move previousMove) {
+        Piece piece = getPiece(previousMove.end());
+        return piece instanceof Pawn && previousMove.twoForward();
     }
 
     private boolean canMove(Point start, Point end) {
