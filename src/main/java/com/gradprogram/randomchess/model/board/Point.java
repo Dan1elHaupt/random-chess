@@ -2,8 +2,6 @@ package com.gradprogram.randomchess.model.board;
 
 import com.google.common.collect.Streams;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -15,8 +13,7 @@ public record Point(int x, int y){
         } else if (start.x() == end.x()) {
             return getBetween(start.y(), end.y()).map(yValue -> new Point(start.x(), yValue));
         }
-        return Streams.zip(getDiagonal(start.x(), end.x()), getDiagonal(start.y(), end.y()),
-            Point::new);
+        return Streams.zip(getBetween(start.x(), end.x()), getBetween(start.y(), end.y()), Point::new);
     }
 
     private static Stream<Integer> getBetween(int start, int end) {
@@ -26,20 +23,6 @@ public record Point(int x, int y){
             stream = stream.sorted((a, b) -> -Integer.compare(a, b));
         }
         return stream;
-    }
-
-    private static Stream<Integer> getDiagonal(int start, int end) {
-        Stream<Integer> coordinates;
-        if (start < end) {
-            coordinates = IntStream.range(start, end).skip(1).boxed();
-        } else {
-            List<Integer> listX = new ArrayList<>();
-            for (int i = start-1; i > end; i--) {
-                listX.add(i);
-            }
-            coordinates = listX.stream();
-        }
-        return coordinates;
     }
 
 }
