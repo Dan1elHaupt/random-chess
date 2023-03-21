@@ -1,8 +1,6 @@
 package com.gradprogram.randomchess.model.piece;
 
-import com.gradprogram.randomchess.model.board.Board;
 import com.gradprogram.randomchess.model.board.Point;
-import com.gradprogram.randomchess.model.board.Square;
 import lombok.Getter;
 
 @Getter
