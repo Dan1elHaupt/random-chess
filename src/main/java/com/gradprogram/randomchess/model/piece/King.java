@@ -29,14 +29,20 @@ public class King extends Piece {
     if (xDiff <= 1 && yDiff <= 1) {
       return board.notInCheckAfterMove(start, end);
     } else {
-//      TODO Castling
+      return canCastle(end);
     }
-    return false;
   }
 
-  private boolean canCastle(Board board, Square start, Square end) {
-    // TODO logic
-    return false;
+  private boolean canCastle(Point end) {
+    if (this.isHasMoved()) {
+      return false;
+    }
+    return castlingEndLocations(end);
+  }
+
+  private boolean castlingEndLocations(Point end) {
+    boolean correctYLocation = this.isWhite() ? end.y() == 0 : end.y() == 7;
+    return correctYLocation && (end.x() == 2 || end.x() == 6);
   }
 
   @Override

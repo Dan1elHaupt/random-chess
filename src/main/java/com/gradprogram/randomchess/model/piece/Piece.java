@@ -2,13 +2,10 @@ package com.gradprogram.randomchess.model.piece;
 
 import com.gradprogram.randomchess.model.board.Board;
 import com.gradprogram.randomchess.model.board.Point;
-import com.gradprogram.randomchess.model.board.Square;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@AllArgsConstructor
 public abstract class Piece {
 
   private final boolean white;
@@ -16,6 +13,14 @@ public abstract class Piece {
   private int x;
   @Setter
   private int y;
+  private boolean hasMoved;
+
+  public Piece(boolean white, int x, int y) {
+    this.white = white;
+    this.x = x;
+    this.y = y;
+    this.hasMoved = false;
+  }
 
 
   @Override

@@ -20,7 +20,12 @@ public record Point(int x, int y){
     }
 
     private static Stream<Integer> getBetween(int start, int end) {
-        return IntStream.range(Math.min(start, end), Math.max(start, end)).skip(1).boxed();
+        boolean reverse = start > end;
+        Stream<Integer> stream = IntStream.range(Math.min(start, end), Math.max(start, end)).skip(1).boxed();
+        if (reverse) {
+            stream = stream.sorted((a, b) -> -Integer.compare(a, b));
+        }
+        return stream;
     }
 
     private static Stream<Integer> getDiagonal(int start, int end) {
