@@ -90,7 +90,8 @@ public class Board {
         if (startingPosition == null || startingPosition.isWhite() != isWhite) {
             return false;
         }
-        if (startingPosition.legalMovePattern(start, end)) {
+
+        if (startingPosition.legalMovePattern(start, end, this)) {
             if (startingPosition instanceof King) {
                 return canKingMove(start, end);
             } else if (startingPosition instanceof Pawn) {
@@ -108,7 +109,7 @@ public class Board {
 //        TODO check logic
         Piece endLocationPiece = getPiece(end);
         boolean endPieceLocationAccessible = endLocationPiece == null ||
-                (endLocationPiece.isWhite() != getPiece(start).isWhite() && !(endLocationPiece instanceof King));
+                (endLocationPiece.isWhite() != getPiece(start).isWhite());
         return  endPieceLocationAccessible;
     }
 
@@ -120,11 +121,11 @@ public class Board {
             } else {
                 rookX = 7;
             }
-            if (!(squares[rookX][start.y()].getPiece() instanceof Rook && squares[rookX][start.y()].getPiece().isHasMoved())) {
+            if (!(squares[rookX][start.y()].getPiece() instanceof Rook && !squares[rookX][start.y()].getPiece().isHasMoved())) {
                 return false;
             }
 //                        TODO getcheck logic here
-            if (Point.getBetween(start, end).map(e -> true).reduce(false, (a, b) -> a || b)) {
+            if (piecesInTheWay(start, end)) {
                 return false;
             }
         }
@@ -138,7 +139,7 @@ public class Board {
             if (endLocationPiece == null) {
                 return enPassantMove(start, end, previousMove);
             } else {
-                return endLocationPiece.isWhite() != getPiece(start).isWhite() && !(endLocationPiece instanceof King);
+                return endLocationPiece.isWhite() != getPiece(start).isWhite();
             }
         } else {
             return !piecesInTheWay(start, end) && getPiece(end) == null;
@@ -146,7 +147,7 @@ public class Board {
         }
     }
 
-    private boolean enPassantMove(Point start, Point end, Move previousMove) {
+    public boolean enPassantMove(Point start, Point end, Move previousMove) {
         return previousMovePawnTwoForward(previousMove) && startNextEndBehindPawnTake(start, end, previousMove);
     }
 
@@ -165,12 +166,12 @@ public class Board {
     private boolean canMove(Point start, Point end) {
 //        TODO add check
         Piece endLocationPiece = getPiece(end);
-        boolean endPieceLocationAccessible = endLocationPiece == null ||
-                (endLocationPiece.isWhite() != getPiece(start).isWhite() && !(endLocationPiece instanceof King));
+        boolean endPieceLocationAccessible = (endLocationPiece == null) ||
+                (endLocationPiece.isWhite() != getPiece(start).isWhite());
         return !piecesInTheWay(start, end) && endPieceLocationAccessible;
     }
 
-    private boolean castlingMove(Point start, Point end) {
+    public boolean castlingMove(Point start, Point end) {
         return Math.abs(start.x() - end.x()) != 1;
     }
 
@@ -189,6 +190,8 @@ public class Board {
 
   public boolean notInCheckAfterMove(Point start, Point end) {
     Point king;
+
+    Move previousMove = new Move(start, end);
 
     Square startSquare = this.getSquare(start);
     Square endSquare = this.getSquare(end);
@@ -215,7 +218,7 @@ public class Board {
     endSquare.setPiece(movedPiece);
     startSquare.setPiece(null);
 
-    boolean notInCheck = notInCheck(king);
+    boolean notInCheck = notInCheck(king, previousMove);
 
     movedPiece.setX(start.x());
     movedPiece.setY(start.y());
@@ -241,7 +244,7 @@ public class Board {
     return notInCheck;
   }
 
-  private boolean notInCheck(Point king) {
+  private boolean notInCheck(Point king, Move previuousMove) {
     List<Piece> opponentPieces;
     if (this.getPiece(king).isWhite()) {
       opponentPieces = blackPieces;
@@ -251,7 +254,8 @@ public class Board {
     for (int i = 0; i < opponentPieces.size(); i++) {
       Piece piece = opponentPieces.get(i);
       Point start = new Point(piece.getX(), piece.getY());
-      if (this.isLegalMove(start, king, piece.isWhite())) {
+
+      if (this.isLegalMove(start, king, piece.isWhite(), previuousMove)) {
         log.info(this.getPiece(king).isWhite() ? "White in check" : "Black in check");
         return false;
       }

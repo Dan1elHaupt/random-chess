@@ -9,10 +9,14 @@ import lombok.Setter;
 public abstract class Piece {
 
   private final boolean white;
+
   @Setter
   private int x;
+
   @Setter
   private int y;
+
+  @Setter
   private boolean hasMoved;
 
   public Piece(boolean white, int x, int y) {

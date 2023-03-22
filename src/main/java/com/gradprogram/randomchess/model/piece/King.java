@@ -2,7 +2,6 @@ package com.gradprogram.randomchess.model.piece;
 
 import com.gradprogram.randomchess.model.board.Board;
 import com.gradprogram.randomchess.model.board.Point;
-import com.gradprogram.randomchess.model.board.Square;
 import com.gradprogram.randomchess.model.movement.Valid;
 import lombok.Getter;
 import lombok.Setter;

@@ -2,8 +2,6 @@ package com.gradprogram.randomchess.client;
 
 import com.gradprogram.randomchess.model.GameStatus;
 import com.gradprogram.randomchess.model.board.Point;
-import com.gradprogram.randomchess.model.board.Square;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class RunGame {
@@ -19,7 +17,6 @@ public class RunGame {
 
   public static void startGame() {
     Point start, end;
-    boolean x;
     int[] points;
 
     Game game = new Game();
