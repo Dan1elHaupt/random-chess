@@ -38,19 +38,18 @@ public class Game {
     moves = new ArrayList<>();
   }
 
-  public void makeMove(Point start, Point end, Scanner scanner) {
+  public boolean makeMove(Point start, Point end, Scanner scanner) {
     if (start == null || end == null || !Valid.validSquareLocation(start) || !Valid.validSquareLocation(end)) {
       log.info("Illegal move: start or end coordinates are invalid.");
-      return;
+      return false;
     }
     if (start.equals(end)) {
       log.info("Illegal move: cannot move to the same square.");
-      return;
+      return false;
     }
     Move previousMove =  moves.size() != 0 ? moves.get(moves.size() - 1) : null;
     if (!board.isLegalMove(start, end, whiteToPlay,previousMove, true)) {
-      log.info(" THIS SHOULD NEVER BE THE ONLY MESSAGE");//TODO: remove after testing
-      return;
+      return false;
     }
 
     updatePieceList(end);
@@ -103,6 +102,7 @@ public class Game {
     whiteToPlay = !whiteToPlay;
     moves.add(new Move(start, end));
 
+    return true;
   }
 
   private void updatePieceList(Point end) {

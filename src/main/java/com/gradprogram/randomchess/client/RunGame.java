@@ -97,6 +97,7 @@ public class RunGame {
   }
 
   public static void startGame() {
+    boolean validMove;
     Point start, end;
     int[] points;
 
@@ -109,6 +110,7 @@ public class RunGame {
     Piece randomPiece;
 
     while (game.getGameStatus() == GameStatus.ACTIVE) {
+      validMove = false;
 
       randomPiece = randomPiece(game, game.getBoard(), game.isWhiteToPlay());
       if (randomPiece == null) {
@@ -124,39 +126,43 @@ public class RunGame {
         }
         break;
       }
-      System.out.println("You must move: " + randomPiece.toString() + " on square: " + coordinateConverter(randomPiece.getX(), randomPiece.getY()));
 
-      System.out.print("Enter next move: ");
-      input = scanner.nextLine();
+      while (!validMove) {
+        System.out.println("You must move: " + randomPiece.toString() + " on square: " + coordinateConverter(randomPiece.getX(), randomPiece.getY()));
 
-      while (!inputValidator(input)) {
-        log.info("Input must be of the form: e4 (Moves a piece to square e4)");
+        System.out.print("Enter next move: ");
         input = scanner.nextLine();
-      }
 
-      if (input.equals("resign")) {
-        if (game.isWhiteToPlay()) {
-          game.setGameStatus(GameStatus.BLACK_WIN);
-          System.out.println("Resignation! Black wins!");
-        } else {
-          game.setGameStatus(GameStatus.WHITE_WIN);
-          System.out.println("Resignation! White wins!");
+        while (!inputValidator(input)) {
+          log.info("Input must be of the form: e4 (Moves a piece to square e4)");
+          input = scanner.nextLine();
         }
-        break;
+
+        if (input.equals("resign")) {
+          if (game.isWhiteToPlay()) {
+            game.setGameStatus(GameStatus.BLACK_WIN);
+            System.out.println("Resignation! Black wins!");
+          } else {
+            game.setGameStatus(GameStatus.WHITE_WIN);
+            System.out.println("Resignation! White wins!");
+          }
+          break;
+        }
+
+        points = coordinateConverter(input);
+        start = new Point(randomPiece.getX(), randomPiece.getY());
+        end = new Point(points[0], points[1]);
+
+        //disables random piece selction, for testing purposes
+        // char[] letterCoordinates = input.toCharArray();
+        // int[] points = {letterCoordinates[0] - 97, Character.getNumericValue(letterCoordinates[1]) - 1,
+        //   letterCoordinates[3] - 97, Character.getNumericValue(letterCoordinates[4]) - 1};
+        // start = new Point(points[0], points[1]);
+        // end = new Point(points[2], points[3]);
+
+        validMove = game.makeMove(start, end, scanner);
       }
 
-      points = coordinateConverter(input);
-      start = new Point(randomPiece.getX(), randomPiece.getY());
-      end = new Point(points[0], points[1]);
-
-      //disables random piece selction, for testing purposes
-      // char[] letterCoordinates = input.toCharArray();
-      // int[] points = {letterCoordinates[0] - 97, Character.getNumericValue(letterCoordinates[1]) - 1,
-      //   letterCoordinates[3] - 97, Character.getNumericValue(letterCoordinates[4]) - 1};
-      // start = new Point(points[0], points[1]);
-      // end = new Point(points[2], points[3]);
-
-      game.makeMove(start, end, scanner);
       game.getBoard().printBoard();
     }
 
