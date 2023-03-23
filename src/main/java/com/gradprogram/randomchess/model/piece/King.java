@@ -20,20 +20,16 @@ public class King extends Piece {
   }
 
   @Override
-  public boolean legalMovePattern(Point start, Point end, Board board, boolean verbose) {
+  public boolean legalMovePattern(Point start, Point end, boolean verbose) {
     int xDiff = Math.abs(start.x() - end.x());
     int yDiff = Math.abs(start.y() - end.y());
-    if (xDiff <= 1 && yDiff <= 1) {
-      return board.notInCheckAfterMove(start, end);
-    } else {
-      if (!canCastle(end)) {
+    if ((xDiff > 1 || yDiff > 1) && !canCastle(end)) {
         if (verbose) {
           log.info("Illegal king move.");
         }
         return false;
-      }
-      return board.notInCheckAfterMove(start, end);
     }
+    return true;
   }
 
   private boolean canCastle(Point end) {

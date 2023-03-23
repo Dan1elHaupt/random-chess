@@ -12,7 +12,7 @@ public class Knight extends Piece {
   }
 
   @Override
-  public boolean legalMovePattern( Point start, Point end, Board board, boolean verbose) {
+  public boolean legalMovePattern( Point start, Point end, boolean verbose) {
     int xDiff = start.x() - end.x();
     int yDiff = start.y() - end.y();
     if (Math.abs(xDiff * yDiff) != 2) {
@@ -21,7 +21,7 @@ public class Knight extends Piece {
       }
       return false;
     }
-    return board.notInCheckAfterMove(start, end);
+    return true;
   }
 
   @Override

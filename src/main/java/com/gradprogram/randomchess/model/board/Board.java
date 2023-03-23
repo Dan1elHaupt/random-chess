@@ -93,8 +93,7 @@ public class Board {
             }
             return false;
         }
-
-        if (startingPiece.legalMovePattern(start, end, this, verbose)) {
+        if (startingPiece.legalMovePattern(start, end, verbose) && notInCheckAfterMove(start, end)) {
             if (startingPiece instanceof King) {
                 return canKingMove(start, end, verbose);
             } else if (startingPiece instanceof Pawn) {
@@ -109,7 +108,6 @@ public class Board {
     }
 
     private boolean canKnightMove(Point start, Point end, boolean verbose) {
-//        TODO check logic
         Piece endLocationPiece = getPiece(end);
         if (endLocationPiece != null && (endLocationPiece.isWhite() == getPiece(start).isWhite())) {
           if (verbose) {
@@ -187,7 +185,7 @@ public class Board {
                 return true;
             }
         } else {
-            return !piecesInTheWay(start, end) && getPiece(end) == null && this.notInCheckAfterMove(start, end);
+            return !piecesInTheWay(start, end) && getPiece(end) == null;
         }
     }
 

@@ -32,6 +32,6 @@ public abstract class Piece {
     return white ? "W" : "B";
   }
 
-  public abstract boolean legalMovePattern(Point start, Point end, Board board, boolean verbose);
+  public abstract boolean legalMovePattern(Point start, Point end, boolean verbose);
 
 }
