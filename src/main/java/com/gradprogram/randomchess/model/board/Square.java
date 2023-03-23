@@ -16,6 +16,6 @@ public class Square {
 
   @Override
   public String toString() {
-    return piece == null ? " |   " : " | " + piece;
+    return piece == null ? " |  " : " | " + piece;
   }
 }

@@ -76,15 +76,15 @@ public class Board {
 
   public void printBoard() {
     for (int y = 7; y >= 0; y--) {
-      System.out.println("     __   __   __   __   __   __   __   __");
+      System.out.println("    ___ ___ ___ ___ ___ ___ ___ ___");
       System.out.print(y + 1 + " ");
       for (int x = 0; x < 8; x++) {
         System.out.print(squares[x][y]);
       }
       System.out.println(" | ");
     }
-    System.out.println("     __   __   __   __   __   __   __   __");
-    System.out.println("     a    b    c    d    e    f    g    h");
+    System.out.println("    ___ ___ ___ ___ ___ ___ ___ ___");
+    System.out.println("     a   b   c   d   e   f   g   h");
   }
 
     public boolean isLegalMove(Point start, Point end, boolean isWhite, Move previousMove, boolean verbose) {
