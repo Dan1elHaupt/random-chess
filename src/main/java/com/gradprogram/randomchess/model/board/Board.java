@@ -86,7 +86,7 @@ public class Board {
     System.out.println("     a   b   c   d   e   f   g   h");
   }
 
-    public boolean isLegalMove(Point start, Point end, boolean isWhite, Move previousMove, boolean verbose) {
+    public boolean isLegalMove(Point start, Point end, boolean isWhite, Move previousMove, boolean verbose, boolean firstIteration) {
         Piece startingPiece = getPiece(start);
         if (startingPiece == null || startingPiece.isWhite() != isWhite) {
             if (verbose) {
@@ -94,11 +94,11 @@ public class Board {
             }
             return false;
         }
-        if (startingPiece.legalMovePattern(start, end, verbose) && notInCheckAfterMove(start, end, verbose)) {
+        if (startingPiece.legalMovePattern(start, end, verbose) && notInCheckAfterMove(start, end, verbose, firstIteration)) {
             if (startingPiece instanceof King) {
-                return canKingMove(start, end, verbose);
+                return canKingMove(start, end, verbose, firstIteration);
             } else if (startingPiece instanceof Pawn) {
-                return canPawnMove(start, end, previousMove, verbose);
+                return canPawnMove(start, end, previousMove, verbose, firstIteration);
             } else if (startingPiece instanceof Knight) {
                 return canKnightMove(start, end, verbose);
             } else {
@@ -119,7 +119,7 @@ public class Board {
         return  true;
     }
 
-    private boolean canKingMove(Point start, Point end, boolean verbose) {
+    private boolean canKingMove(Point start, Point end, boolean verbose, boolean firstIteration) {
         if (castlingMove(start, end)) {
             if (squares[start.x()][start.y()].isHasMoved()) {
               if (verbose) {
@@ -140,7 +140,7 @@ public class Board {
               }
                 return false;
             }
-            boolean piecesUnderAttack = Point.getBetween(start, end).map(point -> this.notInCheckAfterMove(start, point, verbose)).reduce(false, (a, b) -> a || b);
+            boolean piecesUnderAttack = Point.getBetween(start, end).map(point -> this.notInCheckAfterMove(start, point, verbose, firstIteration)).reduce(false, (a, b) -> a || b);
             if ( piecesUnderAttack) {
               if (verbose) {
                 System.out.println("Illegal move: cannot castle through check.");
@@ -151,7 +151,7 @@ public class Board {
         return canMove(start, end, verbose);
     }
 
-    private boolean canPawnMove(Point start, Point end, Move previousMove, boolean verbose) {
+    private boolean canPawnMove(Point start, Point end, Move previousMove, boolean verbose, boolean firstIteration) {
         if (Valid.legalDiagonalMove(start, end)) {
             if (Math.abs(start.x() - end.x()) != 1) {
               if (verbose) {
@@ -184,7 +184,7 @@ public class Board {
                 return true;
             }
         } else {
-            return !piecesInTheWay(start, end) && getPiece(end) == null && this.notInCheckAfterMove(start, end, verbose);
+            return !piecesInTheWay(start, end) && getPiece(end) == null && this.notInCheckAfterMove(start, end, verbose ,firstIteration);
         }
     }
 
@@ -238,7 +238,7 @@ public class Board {
       squares[point.x()][point.y()] = piece;
   }
 
-  public boolean notInCheckAfterMove(Point start, Point end, boolean verbose) {
+  public boolean notInCheckAfterMove(Point start, Point end, boolean verbose, boolean firstIteration) {
     Point king;
 
     Move previousMove = new Move(start, end);
@@ -264,7 +264,7 @@ public class Board {
     setPiece(end, movedPiece);
     setPiece(start, null);
 
-    boolean notInCheck = notInCheck(king, previousMove, verbose);
+    boolean notInCheck = notInCheck(king, previousMove, verbose, firstIteration);
 
     movedPiece.setX(start.x());
     movedPiece.setY(start.y());
@@ -284,20 +284,23 @@ public class Board {
     return notInCheck;
   }
 
-  private boolean notInCheck(Point king, Move previuousMove, boolean verbose) {
+  private boolean notInCheck(Point king, Move previuousMove, boolean verbose, boolean firstIteration) {
+    if (!firstIteration) {
+      return true;
+    }
+    
     List<Piece> opponentPieces;
     if (this.getPiece(king).isWhite()) {
       opponentPieces = blackPieces;
     } else {
       opponentPieces = whitePieces;
     }
-    for (int i = 0; i < opponentPieces.size(); i++) {
-      Piece piece = opponentPieces.get(i);
+    for (Piece piece : opponentPieces) {
       Point start = new Point(piece.getX(), piece.getY());
-
-      if (this.isLegalMove(start, king, piece.isWhite(), previuousMove, false)) {
+      if (this.isLegalMove(start, king, piece.isWhite(), previuousMove, false, false)) {
         if (verbose) {
-          System.out.println("Illegal move: " + (this.getPiece(king).isWhite() ? "White in check" : "Black in check"));
+          System.out.println("Illegal move: " + (this.getPiece(king).isWhite() ? "White in check"
+              : "Black in check"));
         }
         return false;
       }

@@ -65,7 +65,7 @@ public class RunGame {
       for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
           if (piece.getX() != x || piece.getY() != y) {
-            if (board.isLegalMove(startPoint, new Point(x, y), whiteToPlay, previousMove, false)) {
+            if (board.isLegalMove(startPoint, new Point(x, y), whiteToPlay, previousMove, false, true)) {
               validPieces.add(piece);
               break board_iteration_loop;
             }
@@ -96,7 +96,7 @@ public class RunGame {
     }
     for (Piece piece : enemyPieces) {
       if (board.isLegalMove(new Point(piece.getX(), piece.getY()), kingPoint, game.isWhiteToPlay(),
-          previousMove, false)) {
+          previousMove, false, true)) {
         return false;
       }
     }

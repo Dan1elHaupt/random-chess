@@ -46,7 +46,7 @@ public class Game {
       return false;
     }
     Move previousMove =  moves.size() != 0 ? moves.get(moves.size() - 1) : null;
-    if (!board.isLegalMove(start, end, whiteToPlay,previousMove, true)) {
+    if (!board.isLegalMove(start, end, whiteToPlay,previousMove, true, true)) {
       return false;
     }
 
