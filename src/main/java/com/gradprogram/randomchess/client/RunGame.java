@@ -3,19 +3,26 @@ package com.gradprogram.randomchess.client;
 import com.gradprogram.randomchess.model.GameStatus;
 import com.gradprogram.randomchess.model.board.Point;
 import java.util.Scanner;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class RunGame {
 
-  private static int[] coordinateConverter(String input) {
+  private static int[] stringToCoordinate(String input) {
     char[] letterCoordinates = input.toCharArray();
 
-    int[] numberCoordinates = {letterCoordinates[0] - 97, Character.getNumericValue(letterCoordinates[1]) - 1,
-      letterCoordinates[3] - 97, Character.getNumericValue(letterCoordinates[4]) - 1};
+    int[] numberCoordinates = {letterCoordinates[0] - 97,
+        Character.getNumericValue(letterCoordinates[1]) - 1};
 
     return numberCoordinates;
-  };
+  }
+
+  private static String coordinateToString(Point point) {
+    return Character.toString(point.x() + 97) + (point.y() + 1);
+  }
 
   public static void startGame() {
+    boolean validMove;
     Point start, end;
     int[] points;
 
@@ -25,22 +32,29 @@ public class RunGame {
     game.getBoard().printBoard();
 
     while (game.getGameStatus() == GameStatus.ACTIVE) {
-      String input = scanner.nextLine();
+      validMove = false;
+      start = game.getRandomPointToMove();
+      log.info("Player to move piece on " + coordinateToString(start));
 
-      if (input.equals("resign")) {
-        if (game.isWhiteToPlay()) {
-          game.setGameStatus(GameStatus.BLACK_WIN);
-        } else {
-          game.setGameStatus(GameStatus.WHITE_WIN);
+      while (!validMove) {
+        String input = scanner.nextLine();
+
+        if (input.equals("resign")) {
+          if (game.isWhiteToPlay()) {
+            log.info("Black won by resignation");
+            game.setGameStatus(GameStatus.BLACK_WIN);
+          } else {
+            log.info("White won by resignation");
+            game.setGameStatus(GameStatus.WHITE_WIN);
+          }
+          break;
         }
-        break;
+
+        points = stringToCoordinate(input);
+        end = new Point(points[0], points[1]);
+
+        validMove = game.makeMove(start, end);
       }
-
-      points = coordinateConverter(input);
-
-      start = new Point(points[0], points[1]);
-      end = new Point(points[2], points[3]);
-      game.makeMove(start, end);
 
       game.getBoard().printBoard();
     }

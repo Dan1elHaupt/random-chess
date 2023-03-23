@@ -8,22 +8,22 @@ import com.gradprogram.randomchess.model.movement.Valid;
 import com.gradprogram.randomchess.model.piece.King;
 import com.gradprogram.randomchess.model.piece.Pawn;
 import com.gradprogram.randomchess.model.piece.Piece;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
 @Slf4j
 public class Game {
 
+  private final List<Move> moves;
   private Board board;
   private boolean whiteToPlay;
   private GameStatus gameStatus;
-  private final List<Move> moves;
 
   public Game() {
     board = new Board();
@@ -32,14 +32,17 @@ public class Game {
     moves = new ArrayList<>();
   }
 
-  public void makeMove(Point start, Point end) {
-    if (!Valid.validSquareLocation(start) || !Valid.validSquareLocation(end)) {
-      return;
+  public boolean makeMove(Point start, Point end) {
+    if ((start.x() == end.x()) && (start.y() == end.y())) {
+      return false;
     }
-    Move previousMove =  moves.size() != 0 ? moves.get(moves.size() - 1) : null;
-    if (!board.isLegalMove(start, end, whiteToPlay,previousMove)) {
+    if (!Valid.validSquareLocation(start) || !Valid.validSquareLocation(end)) {
+      return false;
+    }
+    Move previousMove = moves.size() != 0 ? moves.get(moves.size() - 1) : null;
+    if (!board.isLegalMove(start, end, whiteToPlay, previousMove)) {
       log.info("Invalid move");
-      return;
+      return false;
     }
 
     updatePieceList(end);
@@ -58,10 +61,58 @@ public class Game {
     whiteToPlay = !whiteToPlay;
     moves.add(new Move(start, end));
 
+    return true;
   }
 
-  public void getRandomPieceToMove() {
+  public Point getRandomPointToMove() {
+    Point point;
+    Piece piece;
+    List<Piece> pieces;
+    List<Piece> piecesThatCanMove = new ArrayList<>();
+    Random random = new Random();
+    Move previousMove = moves.size() != 0 ? moves.get(moves.size() - 1) : null;
 
+    if (whiteToPlay) {
+      pieces = board.whitePieces;
+    } else {
+      pieces = board.blackPieces;
+    }
+
+    for (int i = 0; i < pieces.size(); i++) {
+      piece = pieces.get(i);
+      point = new Point(0, 0);
+      while (point != null) {
+        if (board.isLegalMove(piece.getPoint(), point, whiteToPlay, previousMove)) {
+          piecesThatCanMove.add(piece);
+          break;
+        }
+        point = getNextPoint(point);
+      }
+    }
+
+    return piecesThatCanMove.get(random.nextInt(piecesThatCanMove.size())).getPoint();
+  }
+
+  private Point getNextPoint(Point point) {
+    int x = point.x();
+    int y = point.y();
+
+    if (x == 7) {
+      if (y == 7) {
+        return null;
+      } else {
+        x = 0;
+        y++;
+      }
+    } else {
+      x++;
+    }
+
+    point = new Point(x, y);
+    if ((board.getPiece(point) != null) && (whiteToPlay == board.getPiece(point).isWhite())) {
+      return getNextPoint(point);
+    }
+    return point;
   }
 
   private void updatePieceList(Point end) {

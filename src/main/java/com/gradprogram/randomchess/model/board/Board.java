@@ -85,95 +85,105 @@ public class Board {
     System.out.println("   a  b  c  d  e  f  g  h");
   }
 
-    public boolean isLegalMove(Point start, Point end, boolean isWhite, Move previousMove) {
-        Piece startingPosition = getPiece(start);
-        if (startingPosition == null || startingPosition.isWhite() != isWhite) {
-            return false;
-        }
-
-        if (startingPosition.legalMovePattern(start, end, this)) {
-            if (startingPosition instanceof King) {
-                return canKingMove(start, end);
-            } else if (startingPosition instanceof Pawn) {
-                return canPawnMove(start, end, previousMove);
-            } else if (startingPosition instanceof Knight) {
-                return canKnightMove(start, end);
-            } else {
-                return canMove(start, end);
-            }
-        }
-        return false;
+  public boolean isLegalMove(Point start, Point end, boolean isWhite, Move previousMove) {
+    if ((start.x() == end.x()) && (start.y() == end.y())) {
+      return false;
+    }
+    Piece startingPosition = getPiece(start);
+    if (startingPosition == null || startingPosition.isWhite() != isWhite) {
+      return false;
     }
 
-    private boolean canKnightMove(Point start, Point end) {
-//        TODO check logic
-        Piece endLocationPiece = getPiece(end);
-        boolean endPieceLocationAccessible = endLocationPiece == null ||
-                (endLocationPiece.isWhite() != getPiece(start).isWhite());
-        return  endPieceLocationAccessible;
-    }
-
-    private boolean canKingMove(Point start, Point end) {
-        if (castlingMove(start, end)) {
-            final int rookX;
-            if (end.x() == 1) {
-                rookX = 0;
-            } else {
-                rookX = 7;
-            }
-            if (!(squares[rookX][start.y()].getPiece() instanceof Rook && !squares[rookX][start.y()].getPiece().isHasMoved())) {
-                return false;
-            }
-//                        TODO getcheck logic here
-            if (piecesInTheWay(start, end)) {
-                return false;
-            }
-        }
+    if (startingPosition.legalMovePattern(start, end, this)) {
+      if (startingPosition instanceof King) {
+        return canKingMove(start, end);
+      } else if (startingPosition instanceof Pawn) {
+        return canPawnMove(start, end, previousMove);
+      } else if (startingPosition instanceof Knight) {
+        return canKnightMove(start, end);
+      } else {
         return canMove(start, end);
-
+      }
     }
+    return false;
+  }
 
-    private boolean canPawnMove(Point start, Point end, Move previousMove) {
-        if (Valid.legalDiagonalMove(start, end)) {
-            Piece endLocationPiece = getPiece(end);
-            if (endLocationPiece == null) {
-                return enPassantMove(start, end, previousMove);
-            } else {
-                return endLocationPiece.isWhite() != getPiece(start).isWhite();
-            }
-        } else {
-            return !piecesInTheWay(start, end) && getPiece(end) == null;
+  private boolean canKnightMove(Point start, Point end) {
+//        TODO check logic
+    Piece endLocationPiece = getPiece(end);
+    boolean endPieceLocationAccessible = endLocationPiece == null ||
+        (endLocationPiece.isWhite() != getPiece(start).isWhite());
+    return endPieceLocationAccessible;
+  }
+
+  private boolean canKingMove(Point start, Point end) {
+    if (castlingMove(start, end)) {
+      final int rookX;
+      if (end.x() == 1) {
+        rookX = 0;
+      } else {
+        rookX = 7;
+      }
+      if (!(squares[rookX][start.y()].getPiece() instanceof Rook
+          && !squares[rookX][start.y()].getPiece().isHasMoved())) {
+        return false;
+      }
+//                        TODO getcheck logic here
+      if (piecesInTheWay(start, end)) {
+        return false;
+      }
+    }
+    return canMove(start, end);
+
+  }
+
+  private boolean canPawnMove(Point start, Point end, Move previousMove) {
+    if (Valid.legalDiagonalMove(start, end)) {
+      Piece endLocationPiece = getPiece(end);
+      if (endLocationPiece == null) {
+        return enPassantMove(start, end, previousMove);
+      } else {
+        return endLocationPiece.isWhite() != getPiece(start).isWhite();
+      }
+    } else {
+      return !piecesInTheWay(start, end) && getPiece(end) == null;
 //            TODO add check in here
-        }
     }
+  }
 
-    public boolean enPassantMove(Point start, Point end, Move previousMove) {
-        return previousMovePawnTwoForward(previousMove) && startNextEndBehindPawnTake(start, end, previousMove);
+  public boolean enPassantMove(Point start, Point end, Move previousMove) {
+    return previousMovePawnTwoForward(previousMove) && startNextEndBehindPawnTake(start, end,
+        previousMove);
+  }
+
+  private boolean startNextEndBehindPawnTake(Point start, Point end, Move previousMove) {
+    Point previousMoveEnd = previousMove.end();
+    boolean starrNextTo =
+        previousMoveEnd.y() == start.y() && Math.abs(previousMoveEnd.x() - start.x()) == 1;
+    boolean endBehind =
+        previousMoveEnd.x() == end.x() && Math.abs(previousMoveEnd.y() - end.y()) == 1;
+    return starrNextTo && endBehind;
+  }
+
+  private boolean previousMovePawnTwoForward(Move previousMove) {
+    if (previousMove == null) {
+      return false;
     }
+    Piece piece = getPiece(previousMove.end());
+    return piece instanceof Pawn && previousMove.twoForward();
+  }
 
-    private boolean startNextEndBehindPawnTake(Point start, Point end, Move previousMove) {
-        Point previousMoveEnd = previousMove.end();
-        boolean starrNextTo = previousMoveEnd.y() == start.y() && Math.abs(previousMoveEnd.x() - start.x()) == 1;
-        boolean endBehind = previousMoveEnd.x() == end.x() && Math.abs(previousMoveEnd.y() - end.y()) == 1;
-        return starrNextTo && endBehind;
-    }
-
-    private boolean previousMovePawnTwoForward(Move previousMove) {
-        Piece piece = getPiece(previousMove.end());
-        return piece instanceof Pawn && previousMove.twoForward();
-    }
-
-    private boolean canMove(Point start, Point end) {
+  private boolean canMove(Point start, Point end) {
 //        TODO add check
-        Piece endLocationPiece = getPiece(end);
-        boolean endPieceLocationAccessible = (endLocationPiece == null) ||
-                (endLocationPiece.isWhite() != getPiece(start).isWhite());
-        return !piecesInTheWay(start, end) && endPieceLocationAccessible;
-    }
+    Piece endLocationPiece = getPiece(end);
+    boolean endPieceLocationAccessible = (endLocationPiece == null) ||
+        (endLocationPiece.isWhite() != getPiece(start).isWhite());
+    return !piecesInTheWay(start, end) && endPieceLocationAccessible;
+  }
 
-    public boolean castlingMove(Point start, Point end) {
-        return Math.abs(start.x() - end.x()) != 1;
-    }
+  public boolean castlingMove(Point start, Point end) {
+    return Math.abs(start.x() - end.x()) != 1;
+  }
 
   private boolean piecesInTheWay(Point start, Point end) {
     return !Point.getBetween(start, end).map(this::getPiece).map(Objects::isNull)
@@ -253,7 +263,7 @@ public class Board {
     }
     for (int i = 0; i < opponentPieces.size(); i++) {
       Piece piece = opponentPieces.get(i);
-      Point start = new Point(piece.getX(), piece.getY());
+      Point start = piece.getPoint();
 
       if (this.isLegalMove(start, king, piece.isWhite(), previuousMove)) {
         log.info(this.getPiece(king).isWhite() ? "White in check" : "Black in check");

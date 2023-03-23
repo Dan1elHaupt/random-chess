@@ -32,6 +32,10 @@ public abstract class Piece {
     return white ? "W" : "B";
   }
 
+  public Point getPoint() {
+    return new Point(x, y);
+  }
+
   public abstract boolean legalMovePattern(Point start, Point end, Board board);
 
 }
