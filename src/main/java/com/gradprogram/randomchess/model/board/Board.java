@@ -133,7 +133,6 @@ public class Board {
               }
               return false;
             }
-//                        TODO getcheck logic here - cant castle through check
             if (piecesInTheWay(start, end)) {
               if (verbose) {
                 log.info("Illegal move: cannot castle through other pieces.");
@@ -206,7 +205,6 @@ public class Board {
     }
 
     private boolean canMove(Point start, Point end, boolean verbose) {
-//        TODO add check
         Piece endLocationPiece = getPiece(end);
         if ((endLocationPiece != null) && (endLocationPiece.isWhite() == getPiece(start).isWhite())) {
           if (verbose) {
