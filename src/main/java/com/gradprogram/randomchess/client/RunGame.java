@@ -34,6 +34,18 @@ public class RunGame {
     while (game.getGameStatus() == GameStatus.ACTIVE) {
       validMove = false;
       start = game.getRandomPointToMove();
+
+      if (start == null) {
+        if (game.isWhiteToPlay()) {
+          log.info("Black won by checkmate");
+          game.setGameStatus(GameStatus.BLACK_WIN);
+        } else {
+          log.info("White won by checkmate");
+          game.setGameStatus(GameStatus.WHITE_WIN);
+        }
+        break;
+      }
+
       log.info("Player to move piece on " + coordinateToString(start));
 
       while (!validMove) {

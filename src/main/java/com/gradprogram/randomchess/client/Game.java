@@ -90,6 +90,10 @@ public class Game {
       }
     }
 
+    if (piecesThatCanMove.size() == 0) {
+      return null;
+    }
+
     return piecesThatCanMove.get(random.nextInt(piecesThatCanMove.size())).getPoint();
   }
 
