@@ -41,11 +41,13 @@ public class RunGame {
 
     Game game = new Game();
     Scanner scanner = new Scanner(System.in);
+    String input;
 
     game.getBoard().printBoard();
 
     while (game.getGameStatus() == GameStatus.ACTIVE) {
-      String input = scanner.nextLine();
+      System.out.print("Enter next move:");
+      input = scanner.nextLine();
 
       while (!inputValidator(input)) {
         log.info("Input must be of the form: e2 e4 (Moves a piece from square e2 to square e4)");
@@ -65,7 +67,7 @@ public class RunGame {
 
       start = new Point(points[0], points[1]);
       end = new Point(points[2], points[3]);
-      game.makeMove(start, end);
+      game.makeMove(start, end, scanner);
 
       game.getBoard().printBoard();
     }
