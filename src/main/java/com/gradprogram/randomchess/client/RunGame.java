@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class RunGame {
 
   private static int[] coordinateConverter(String input) {
+    //TODO: add check for correct format
     char[] letterCoordinates = input.toCharArray();
 
     int[] numberCoordinates = {letterCoordinates[0] - 97, Character.getNumericValue(letterCoordinates[1]) - 1,

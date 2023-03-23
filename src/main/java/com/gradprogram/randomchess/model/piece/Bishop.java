@@ -2,9 +2,10 @@ package com.gradprogram.randomchess.model.piece;
 
 import com.gradprogram.randomchess.model.board.Board;
 import com.gradprogram.randomchess.model.board.Point;
-import com.gradprogram.randomchess.model.board.Square;
 import com.gradprogram.randomchess.model.movement.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Bishop extends Piece {
 
   public Bishop(boolean white, int x, int y) {
@@ -12,14 +13,14 @@ public class Bishop extends Piece {
   }
 
   @Override
-  public boolean legalMovePattern( Point start, Point end, Board board) {
-    if (!Valid.validSquareLocation(end)) {
+  public boolean legalMovePattern( Point start, Point end, Board board, boolean verbose) {
+    if (!Valid.legalDiagonalMove(start, end)) {
+      if (verbose) {
+        log.info("Illegal bishop move.");
+      }
       return false;
     }
-    if (Valid.legalDiagonalMove(start, end)) {
-      return board.notInCheckAfterMove(start, end);
-    }
-    return false;
+    return board.notInCheckAfterMove(start, end);
   }
 
   @Override

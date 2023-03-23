@@ -20,11 +20,7 @@ public class Pawn extends Piece {
   }
 
   @Override
-  public boolean legalMovePattern(Point start, Point end, Board board) {
-    if (!Valid.validSquareLocation(end)) {
-      return false;
-    }
-
+  public boolean legalMovePattern(Point start, Point end, Board board, boolean verbose) {
     if (isAMoveForward(start, end)) {
       if (Valid.legalVerticalMove(start, end)) {
         int diff = Math.abs(start.y() - end.y());
@@ -39,7 +35,9 @@ public class Pawn extends Piece {
         return ((Math.abs(start.y() - end.y()) == 1) && board.notInCheckAfterMove(start, end));
       }
     }
-
+    if (verbose) {
+      log.info("Illegal pawn move.");
+    }
     return false;
   }
 

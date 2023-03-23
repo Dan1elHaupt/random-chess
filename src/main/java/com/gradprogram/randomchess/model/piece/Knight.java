@@ -2,9 +2,9 @@ package com.gradprogram.randomchess.model.piece;
 
 import com.gradprogram.randomchess.model.board.Board;
 import com.gradprogram.randomchess.model.board.Point;
-import com.gradprogram.randomchess.model.board.Square;
-import com.gradprogram.randomchess.model.movement.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Knight extends Piece {
 
   public Knight(boolean white, int x, int y) {
@@ -12,17 +12,16 @@ public class Knight extends Piece {
   }
 
   @Override
-  public boolean legalMovePattern( Point start, Point end, Board board) {
-    if (!Valid.validSquareLocation(end)) {
-      return false;
-    }
-
+  public boolean legalMovePattern( Point start, Point end, Board board, boolean verbose) {
     int xDiff = start.x() - end.x();
     int yDiff = start.y() - end.y();
-    if (Math.abs(xDiff * yDiff) == 2) {
-      return board.notInCheckAfterMove(start, end);
+    if (Math.abs(xDiff * yDiff) != 2) {
+      if (verbose) {
+        log.info("Illegal knight move.");
+      }
+      return false;
     }
-    return false;
+    return board.notInCheckAfterMove(start, end);
   }
 
   @Override

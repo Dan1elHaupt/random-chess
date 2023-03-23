@@ -85,64 +85,102 @@ public class Board {
     System.out.println("   a  b  c  d  e  f  g  h");
   }
 
-    public boolean isLegalMove(Point start, Point end, boolean isWhite, Move previousMove) {
-        Piece startingPosition = getPiece(start);
-        if (startingPosition == null || startingPosition.isWhite() != isWhite) {
+    public boolean isLegalMove(Point start, Point end, boolean isWhite, Move previousMove, boolean verbose) {
+        Piece startingPiece = getPiece(start);
+        if (startingPiece == null || startingPiece.isWhite() != isWhite) {
+            if (verbose) {
+              log.info("Illegal move: must move one of your own pices.");
+            }
             return false;
         }
 
-        if (startingPosition.legalMovePattern(start, end, this)) {
-            if (startingPosition instanceof King) {
-                return canKingMove(start, end);
-            } else if (startingPosition instanceof Pawn) {
-                return canPawnMove(start, end, previousMove);
-            } else if (startingPosition instanceof Knight) {
-                return canKnightMove(start, end);
+        if (startingPiece.legalMovePattern(start, end, this, verbose)) {
+            if (startingPiece instanceof King) {
+                return canKingMove(start, end, verbose);
+            } else if (startingPiece instanceof Pawn) {
+                return canPawnMove(start, end, previousMove, verbose);
+            } else if (startingPiece instanceof Knight) {
+                return canKnightMove(start, end, verbose);
             } else {
-                return canMove(start, end);
+                return canMove(start, end, verbose);
             }
         }
         return false;
     }
 
-    private boolean canKnightMove(Point start, Point end) {
+    private boolean canKnightMove(Point start, Point end, boolean verbose) {
 //        TODO check logic
         Piece endLocationPiece = getPiece(end);
-        boolean endPieceLocationAccessible = endLocationPiece == null ||
-                (endLocationPiece.isWhite() != getPiece(start).isWhite());
-        return  endPieceLocationAccessible;
+        if (endLocationPiece != null && (endLocationPiece.isWhite() == getPiece(start).isWhite())) {
+          if (verbose) {
+            log.info("Illegal move: cannot capture your own piece.");
+          }
+          return false;
+        }
+        return  true;
     }
 
-    private boolean canKingMove(Point start, Point end) {
+    private boolean canKingMove(Point start, Point end, boolean verbose) {
         if (castlingMove(start, end)) {
-            final int rookX;
-            if (end.x() == 1) {
-                rookX = 0;
-            } else {
-                rookX = 7;
+            if (squares[start.x()][start.y()].getPiece().isHasMoved()) {
+              if (verbose) {
+                log.info("Illegal move: cannot castle as your king has already moved.");
+              }
+              return false;
             }
-            if (!(squares[rookX][start.y()].getPiece() instanceof Rook && !squares[rookX][start.y()].getPiece().isHasMoved())) {
-                return false;
+            final int rookX = (end.x() == 2) ? 0 : 7;
+            if (!(squares[rookX][start.y()].getPiece() instanceof Rook) || (squares[rookX][start.y()].getPiece().isHasMoved())) {
+              if (verbose) {
+                log.info("Illegal move: must have a rook that hasn't moved to castle to.");
+              }
+              return false;
             }
-//                        TODO getcheck logic here
+//                        TODO getcheck logic here - cant castle through check
             if (piecesInTheWay(start, end)) {
+              if (verbose) {
+                log.info("Illegal move: cannot castle through other pieces.");
+              }
                 return false;
             }
         }
-        return canMove(start, end);
-
+        return canMove(start, end, verbose);
     }
 
-    private boolean canPawnMove(Point start, Point end, Move previousMove) {
+    private boolean canPawnMove(Point start, Point end, Move previousMove, boolean verbose) {
+        //TODO: add promotion logic?
         if (Valid.legalDiagonalMove(start, end)) {
+            if (Math.abs(start.x() - end.x()) != 1) {
+              if (verbose) {
+                log.info("Illegal move: pawns can only capture one square diagonally.");
+              }
+              return false;
+            }
             Piece endLocationPiece = getPiece(end);
             if (endLocationPiece == null) {
-                return enPassantMove(start, end, previousMove);
+                if (previousMove == null) {
+                  if (verbose) {
+                    log.info("Illegal move: pawns can only move diagonally to capture.");
+                  }
+                  return false;
+                }
+                if (!enPassantMove(start, end, previousMove)) {
+                  if (verbose) {
+                    log.info("Illegal en passant move.");
+                  }
+                  return false;
+                }
+                return true;
             } else {
-                return endLocationPiece.isWhite() != getPiece(start).isWhite();
+                if (endLocationPiece.isWhite() != getPiece(start).isWhite()) {
+                  if (verbose) {
+                    log.info("Illegal move: cannot capture your own piece.");
+                  }
+                  return false;
+                }
+                return true;
             }
         } else {
-            return !piecesInTheWay(start, end) && getPiece(end) == null;
+            return canMove(start, end, verbose);
 //            TODO add check in here
         }
     }
@@ -163,16 +201,26 @@ public class Board {
         return piece instanceof Pawn && previousMove.twoForward();
     }
 
-    private boolean canMove(Point start, Point end) {
+    private boolean canMove(Point start, Point end, boolean verbose) {
 //        TODO add check
         Piece endLocationPiece = getPiece(end);
-        boolean endPieceLocationAccessible = (endLocationPiece == null) ||
-                (endLocationPiece.isWhite() != getPiece(start).isWhite());
-        return !piecesInTheWay(start, end) && endPieceLocationAccessible;
+        if ((endLocationPiece != null) && (endLocationPiece.isWhite() == getPiece(start).isWhite())) {
+          if (verbose) {
+            log.info("Illegal move: cannot capture one of your own pieces.");
+          }
+          return false;
+        }
+        if (piecesInTheWay(start, end)) {
+          if (verbose) {
+            log.info("Illegal move: cannot travel through other pieces.");
+          }
+          return false;
+        }
+        return true;
     }
 
     public boolean castlingMove(Point start, Point end) {
-        return Math.abs(start.x() - end.x()) != 1;
+        return Math.abs(start.x() - end.x()) > 1;
     }
 
   private boolean piecesInTheWay(Point start, Point end) {
@@ -255,8 +303,8 @@ public class Board {
       Piece piece = opponentPieces.get(i);
       Point start = new Point(piece.getX(), piece.getY());
 
-      if (this.isLegalMove(start, king, piece.isWhite(), previuousMove)) {
-        log.info(this.getPiece(king).isWhite() ? "White in check" : "Black in check");
+      if (this.isLegalMove(start, king, piece.isWhite(), previuousMove, false)) {
+        log.info("Illegal move: " + (this.getPiece(king).isWhite() ? "White in check" : "Black in check"));
         return false;
       }
     }

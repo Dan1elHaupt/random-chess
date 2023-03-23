@@ -33,12 +33,17 @@ public class Game {
   }
 
   public void makeMove(Point start, Point end) {
-    if (!Valid.validSquareLocation(start) || !Valid.validSquareLocation(end)) {
+    if (start == null || end == null || !Valid.validSquareLocation(start) || !Valid.validSquareLocation(end)) {
+      log.info("Illegal move: start or end coordinates are invalid.");
+      return;
+    }
+    if (start.equals(end)) {
+      log.info("Illegal move: cannot move to the same square.");
       return;
     }
     Move previousMove =  moves.size() != 0 ? moves.get(moves.size() - 1) : null;
-    if (!board.isLegalMove(start, end, whiteToPlay,previousMove)) {
-      log.info("Invalid move");
+    if (!board.isLegalMove(start, end, whiteToPlay,previousMove, true)) {
+      log.info(" THIS SHOULD NEVER BE THE ONLY MESSAGE");//TODO: remove after testing
       return;
     }
 
