@@ -60,6 +60,10 @@ public class Game {
 
   }
 
+  public void getRandomPieceToMove() {
+
+  }
+
   private void updatePieceList(Point end) {
     Piece takenPiece = board.getSquare(end).getPiece();
     if (takenPiece != null) {
