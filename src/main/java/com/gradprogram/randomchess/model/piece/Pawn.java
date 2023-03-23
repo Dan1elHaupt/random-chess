@@ -23,12 +23,10 @@ public class Pawn extends Piece {
     if (isAMoveForward(start, end)) {
       if (Valid.legalVerticalMove(start, end)) {
         int diff = Math.abs(start.y() - end.y());
-        if (diff == 1) {
-          return true;
-        } else if (diff == 2) {
+        if (diff == 2) {
           return inStartPosition(start);
         } else {
-          return false;
+          return diff == 1;
         }
       } else if (Valid.legalDiagonalMove(start, end)) {
         return Math.abs(start.y() - end.y()) == 1;
