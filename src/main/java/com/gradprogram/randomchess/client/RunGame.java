@@ -54,9 +54,7 @@ public class RunGame {
     List<Piece> candidatePieces = whiteToPlay ? board.whitePieces : board.blackPieces;
     List<Piece> validPieces = new ArrayList<>();
     Point startPoint;
-    // for (Piece piece : candidatePieces) {
-    for (int i = 0; i < candidatePieces.size(); i++) {
-      Piece piece = candidatePieces.get(i);
+    for (Piece piece : candidatePieces) {
       startPoint = new Point(piece.getX(), piece.getY());
       board_iteration_loop:
       for (int x = 0; x < 8; x++) {
@@ -71,11 +69,31 @@ public class RunGame {
       }
     }
     if (validPieces.size() < 1) {
-      //TODO: checkmate logic
-      log.info("CHECKMATE");
+      log.info("CHECKMATE / STALEMATE");
+      return null;
     }
     Random random = new Random();
     return validPieces.get(random.nextInt(validPieces.size()));
+  }
+
+  private static boolean isStalemate(Game game, Board board) {
+    Point kingPoint;
+    List<Piece> enemyPieces;
+    List<Move> previousMoves = game.getMoves();
+    Move previousMove =  previousMoves.size() != 0 ? previousMoves.get(previousMoves.size() - 1) : null;
+    if (game.isWhiteToPlay()) {
+      kingPoint = board.getWhiteKing();
+      enemyPieces = board.blackPieces;
+    } else {
+      kingPoint = board.getBlackKing();
+      enemyPieces = board.whitePieces;
+    }
+    for (Piece piece : enemyPieces) {
+      if (board.isLegalMove(new Point(piece.getX(), piece.getY()), kingPoint, game.isWhiteToPlay(), previousMove, false)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public static void startGame() {
@@ -93,7 +111,19 @@ public class RunGame {
     while (game.getGameStatus() == GameStatus.ACTIVE) {
 
       randomPiece = randomPiece(game, game.getBoard(), game.isWhiteToPlay());
-      // randomPiece = game.getBoard().getPiece(game.isWhiteToPlay() ? new Point(1, 1) : new Point(6, 6));
+      if (randomPiece == null) {
+        if (isStalemate(game, game.getBoard())) {
+          game.setGameStatus(GameStatus.STALEMATE);
+          System.out.println("Stalemate! Game is a draw.");
+        } else if (game.isWhiteToPlay()) {
+          game.setGameStatus(GameStatus.BLACK_WIN);
+          System.out.println("Checkmate! Black wins!");
+        } else {
+          game.setGameStatus(GameStatus.WHITE_WIN);
+          System.out.println("Checkmate! White wins!");
+        }
+        break;
+      }
       System.out.println("You must move: " + randomPiece.toString() + " on square: " + coordinateConverter(randomPiece.getX(), randomPiece.getY()));
 
       System.out.print("Enter next move: ");
@@ -107,21 +137,26 @@ public class RunGame {
       if (input.equals("resign")) {
         if (game.isWhiteToPlay()) {
           game.setGameStatus(GameStatus.BLACK_WIN);
+          System.out.println("Resignation! Black wins!");
         } else {
           game.setGameStatus(GameStatus.WHITE_WIN);
+          System.out.println("Resignation! White wins!");
         }
         break;
       }
 
       points = coordinateConverter(input);
-
       start = new Point(randomPiece.getX(), randomPiece.getY());
       end = new Point(points[0], points[1]);
+
+      //disables random piece selction, for testing purposes
+      // char[] letterCoordinates = input.toCharArray();
+      // int[] points = {letterCoordinates[0] - 97, Character.getNumericValue(letterCoordinates[1]) - 1,
+      //   letterCoordinates[3] - 97, Character.getNumericValue(letterCoordinates[4]) - 1};
+      // start = new Point(points[0], points[1]);
+      // end = new Point(points[2], points[3]);
+
       game.makeMove(start, end, scanner);
-
-      System.out.println(game.getBoard().whitePieces);
-      System.out.println(game.getBoard().blackPieces);
-
       game.getBoard().printBoard();
     }
 
