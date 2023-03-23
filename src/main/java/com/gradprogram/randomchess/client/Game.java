@@ -64,37 +64,7 @@ public class Game {
     movePieces(start, end);
 
     if (board.getPiece(end) instanceof Pawn) {
-      if ((whiteToPlay && end.y() == 7) || (!whiteToPlay && end.y() == 0)) {
-        System.out.println("What piece would you like to promote to (B, K, R, Q)?");
-        String promotion = scanner.next();
-        Piece promotedPiece;
-        while (true) {
-          if (promotion.equalsIgnoreCase("B")) {
-            promotedPiece = new Bishop(whiteToPlay, end.x(), end.y());
-            break;
-          } else if (promotion.equalsIgnoreCase("K")) {
-            promotedPiece = new Knight(whiteToPlay, end.x(), end.y());
-            break;
-          } else if (promotion.equalsIgnoreCase("R")) {
-            promotedPiece = new Rook(whiteToPlay, end.x(), end.y());
-            break;
-          } else if (promotion.equalsIgnoreCase("Q")) {
-            promotedPiece = new Queen(whiteToPlay, end.x(), end.y());
-            break;
-          } else {
-            System.out.println("Input must be of the form B, K, R or Q.");
-            promotion = scanner.next();
-          }
-        }
-        if (whiteToPlay) {
-          board.whitePieces.remove(board.getPiece(end));
-          board.whitePieces.add(promotedPiece);
-        } else {
-          board.blackPieces.remove(board.getPiece(end));
-          board.blackPieces.add(promotedPiece);
-        }
-        board.setPiece(end, promotedPiece);
-      }
+      handlePromotion(end, scanner);
     }
 
     updateKingLocation(end);
@@ -166,5 +136,36 @@ public class Game {
       board.setPiece(new Point(end.x(), start.y()), null);
     }
   }
+
+  private void handlePromotion(Point end, Scanner scanner) {
+    if ((whiteToPlay && end.y() == 7) || (!whiteToPlay && end.y() == 0)) {
+      System.out.println("What piece would you like to promote to (B, K, R, Q)?");
+      String promotion = scanner.next();
+      Piece promotedPiece = null;
+      while (promotedPiece == null) {
+        if (promotion.equalsIgnoreCase("B")) {
+          promotedPiece = new Bishop(whiteToPlay, end.x(), end.y());
+        } else if (promotion.equalsIgnoreCase("K")) {
+          promotedPiece = new Knight(whiteToPlay, end.x(), end.y());
+        } else if (promotion.equalsIgnoreCase("R")) {
+          promotedPiece = new Rook(whiteToPlay, end.x(), end.y());
+        } else if (promotion.equalsIgnoreCase("Q")) {
+          promotedPiece = new Queen(whiteToPlay, end.x(), end.y());
+        } else {
+          System.out.println("Input must be of the form B, K, R or Q.");
+          promotion = scanner.next();
+        }
+      }
+      if (whiteToPlay) {
+        board.whitePieces.remove(board.getPiece(end));
+        board.whitePieces.add(promotedPiece);
+      } else {
+        board.blackPieces.remove(board.getPiece(end));
+        board.blackPieces.add(promotedPiece);
+      }
+      board.setPiece(end, promotedPiece);
+    }
+  }
+
 
 }
