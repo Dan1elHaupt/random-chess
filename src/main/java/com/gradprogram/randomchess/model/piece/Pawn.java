@@ -54,6 +54,6 @@ public class Pawn extends Piece {
 
   @Override
   public String toString() {
-    return super.toString() + "P";
+    return (this.isWhite() ? "\033[0;33m" : "\033[0;31m") + "P\033[0m";
   }
 }

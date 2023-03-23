@@ -24,6 +24,6 @@ public class Rook extends Piece {
 
   @Override
   public String toString() {
-    return super.toString() + "R";
+    return (this.isWhite() ? "\033[0;33m" : "\033[0;31m") + "R\033[0m";
   }
 }

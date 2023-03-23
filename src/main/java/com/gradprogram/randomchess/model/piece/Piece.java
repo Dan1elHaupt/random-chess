@@ -25,12 +25,6 @@ public abstract class Piece {
     this.hasMoved = false;
   }
 
-
-  @Override
-  public String toString() {
-    return white ? "W" : "B";
-  }
-
   public abstract boolean legalMovePattern(Point start, Point end, boolean verbose);
 
 }

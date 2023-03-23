@@ -24,6 +24,6 @@ public class Queen extends Piece {
 
   @Override
   public String toString() {
-    return super.toString() + "Q";
+    return (this.isWhite() ? "\033[0;33m" : "\033[0;31m") + "Q\033[0m";
   }
 }

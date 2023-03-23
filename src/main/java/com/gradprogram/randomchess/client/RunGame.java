@@ -117,10 +117,10 @@ public class RunGame {
           System.out.println("Stalemate! Game is a draw.");
         } else if (game.isWhiteToPlay()) {
           game.setGameStatus(GameStatus.BLACK_WIN);
-          System.out.println("Checkmate! Black wins!");
+          System.out.println("\033[0;31mCheckmate! Black wins!\033[0m");
         } else {
           game.setGameStatus(GameStatus.WHITE_WIN);
-          System.out.println("Checkmate! White wins!");
+          System.out.println("\033[0;33mCheckmate! White wins!\033[0m");
         }
         break;
       }
@@ -137,10 +137,10 @@ public class RunGame {
       if (input.equals("resign")) {
         if (game.isWhiteToPlay()) {
           game.setGameStatus(GameStatus.BLACK_WIN);
-          System.out.println("Resignation! Black wins!");
+          System.out.println("\033[0;31mResignation! Black wins!\033[0m");
         } else {
           game.setGameStatus(GameStatus.WHITE_WIN);
-          System.out.println("Resignation! White wins!");
+          System.out.println("\033[0;33mResignation! White wins!\033[0m");
         }
         break;
       }

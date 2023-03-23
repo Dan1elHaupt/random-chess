@@ -24,6 +24,6 @@ public class Bishop extends Piece {
 
   @Override
   public String toString() {
-    return super.toString() + "B";
+    return (this.isWhite() ? "\033[0;33m" : "\033[0;31m") + "B\033[0m";
   }
 }

@@ -25,6 +25,6 @@ public class Knight extends Piece {
 
   @Override
   public String toString() {
-    return super.toString() + "N";
+    return (this.isWhite() ? "\033[0;33m" : "\033[0;31m") + "N\033[0m";
   }
 }
