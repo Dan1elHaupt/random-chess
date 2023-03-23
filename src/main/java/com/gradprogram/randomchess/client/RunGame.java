@@ -12,15 +12,15 @@ public class RunGame {
      if (input.equals("resign")) {
       return true;
      }
-     if (input.length() != 5) {
+     if (input.length() != 2) {
       return false;
      }
 
     char[] letterCoordinates = input.toCharArray();
-    if ((int) letterCoordinates[0] < 97 || (int) letterCoordinates[0] > 104 || (int) letterCoordinates[3] < 97 || (int) letterCoordinates[3] > 104) {
+    if ((int) letterCoordinates[0] < 97 || (int) letterCoordinates[0] > 104) {
       return false;
     }
-    if ((int) letterCoordinates[1] < 49 || (int) letterCoordinates[1] > 56 || (int) letterCoordinates[4] < 49 || (int) letterCoordinates[4] > 56) {
+    if ((int) letterCoordinates[1] < 49 || (int) letterCoordinates[1] > 56) {
       return false;
     }
     return true;
@@ -68,6 +68,11 @@ public class RunGame {
 
       while (!validMove) {
         String input = scanner.nextLine();
+
+        while (!inputValidator(input)) {
+          log.info("Input must be of the form: e2 e4 (Moves a piece from square e2 to square e4)");
+          input = scanner.nextLine();
+        }
 
         if (input.equals("resign")) {
           if (game.isWhiteToPlay()) {
