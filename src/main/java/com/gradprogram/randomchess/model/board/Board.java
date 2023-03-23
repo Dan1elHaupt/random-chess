@@ -176,7 +176,7 @@ public class Board {
                 }
                 return true;
             } else {
-                if (endLocationPiece.isWhite() != getPiece(start).isWhite()) {
+                if (endLocationPiece.isWhite() == getPiece(start).isWhite()) {
                   if (verbose) {
                     log.info("Illegal move: cannot capture your own piece.");
                   }

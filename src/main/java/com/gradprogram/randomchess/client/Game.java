@@ -5,9 +5,15 @@ import com.gradprogram.randomchess.model.board.Board;
 import com.gradprogram.randomchess.model.board.Move;
 import com.gradprogram.randomchess.model.board.Point;
 import com.gradprogram.randomchess.model.movement.Valid;
+import com.gradprogram.randomchess.model.piece.Bishop;
 import com.gradprogram.randomchess.model.piece.King;
+import com.gradprogram.randomchess.model.piece.Knight;
 import com.gradprogram.randomchess.model.piece.Pawn;
 import com.gradprogram.randomchess.model.piece.Piece;
+import com.gradprogram.randomchess.model.piece.Queen;
+import com.gradprogram.randomchess.model.piece.Rook;
+
+import java.util.Scanner;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +38,7 @@ public class Game {
     moves = new ArrayList<>();
   }
 
-  public void makeMove(Point start, Point end) {
+  public void makeMove(Point start, Point end, Scanner scanner) {
     if (start == null || end == null || !Valid.validSquareLocation(start) || !Valid.validSquareLocation(end)) {
       log.info("Illegal move: start or end coordinates are invalid.");
       return;
@@ -57,6 +63,33 @@ public class Game {
     }
 
     movePieces(start, end);
+
+    if (board.getPiece(end) instanceof Pawn) {
+      if ((whiteToPlay && end.y() == 7) || (!whiteToPlay && end.y() == 0)) {
+        System.out.println("What piece would you like to promote to (B, K, R, Q)?");
+        String promotion = scanner.next();
+        Piece promotedPiece;
+        while (true) {
+          if (promotion.equalsIgnoreCase("B")) {
+            promotedPiece = new Bishop(whiteToPlay, end.x(), end.y());
+            break;
+          } else if (promotion.equalsIgnoreCase("K")) {
+            promotedPiece = new Knight(whiteToPlay, end.x(), end.y());
+            break;
+          } else if (promotion.equalsIgnoreCase("R")) {
+            promotedPiece = new Rook(whiteToPlay, end.x(), end.y());
+            break;
+          } else if (promotion.equalsIgnoreCase("Q")) {
+            promotedPiece = new Queen(whiteToPlay, end.x(), end.y());
+            break;
+          } else {
+            System.out.println("Input must be of the form B, K, R or Q.");
+            promotion = scanner.next();
+          }
+        }
+        board.getSquare(end).setPiece(promotedPiece);
+      }
+    }
 
     updateKingLocation(end);
 
