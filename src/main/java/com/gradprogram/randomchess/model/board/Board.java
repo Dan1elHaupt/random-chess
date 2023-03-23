@@ -207,20 +207,17 @@ public class Board {
         this.setWhiteKing(end);
       }
       king = this.getWhiteKing();
-      blackPieces.remove(oldEndPiece);
     } else {
       if (movedPiece instanceof King) {
         this.setBlackKing(end);
       }
       king = this.getBlackKing();
-      whitePieces.remove(oldEndPiece);
     }
 
     movedPiece.setX(end.x());
     movedPiece.setY(end.y());
     endSquare.setPiece(movedPiece);
     startSquare.setPiece(null);
-
     boolean notInCheck = notInCheck(king, previousMove);
 
     movedPiece.setX(start.x());
@@ -232,15 +229,9 @@ public class Board {
       if (movedPiece instanceof King) {
         this.setWhiteKing(start);
       }
-      if (oldEndPiece != null) {
-        blackPieces.add(oldEndPiece);
-      }
     } else {
       if (movedPiece instanceof King) {
         this.setBlackKing(start);
-      }
-      if (oldEndPiece != null) {
-        whitePieces.add(oldEndPiece);
       }
     }
 

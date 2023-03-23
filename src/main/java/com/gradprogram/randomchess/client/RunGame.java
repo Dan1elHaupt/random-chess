@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class RunGame {
 
   private static int[] coordinateConverter(String input) {
-    char[] letterCoordinates = input.toCharArray();
+    char[] letterCoordinates = input.toLowerCase().toCharArray();
 
     int[] numberCoordinates = {letterCoordinates[0] - 97, Character.getNumericValue(letterCoordinates[1]) - 1};
 
@@ -33,7 +33,7 @@ public class RunGame {
     letters.add('G');
     letters.add('H');
 
-    return letters.get(point.x()).toString() + (point.y()) ;
+    return letters.get(point.x()).toString() + (point.y()+1) ;
   };
 
   public static boolean validInput(String input) {
@@ -59,15 +59,18 @@ public class RunGame {
     Collections.shuffle(currentPieces);
 
 
-    for (Piece currentPiece : currentPieces) {
+    for (int i =0; i < currentPieces.size(); i++) {
+      Piece currentPiece = currentPieces.get(i);
+
       for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
           Move previousMove =  game.getMoves().size() != 0 ? game.getMoves().get(game.getMoves().size() - 1) : null;
-          if ( (new Point(currentPiece.getX(),currentPiece.getY()) != new Point(x,y)) &&(game.getBoard().isLegalMove(new Point(currentPiece.getX(),currentPiece.getY()), new Point(x,y), game.isWhiteToPlay(), previousMove)) ) {
-            return new Point(x,y);
+          if ( !((x == currentPiece.getX()) && (y == currentPiece.getY())) &&(game.getBoard().isLegalMove(new Point(currentPiece.getX(),currentPiece.getY()), new Point(x,y), game.isWhiteToPlay(), previousMove)) ) {
+            return new Point(currentPiece.getX(), currentPiece.getY());
           }
         }
       }
+
     }
 
 
@@ -77,7 +80,7 @@ public class RunGame {
   public static void startGame() {
     Point start, end;
     int[] points;
-    String startPoints;
+    String startString;
 
     Game game = new Game();
     Scanner scanner = new Scanner(System.in);
@@ -86,9 +89,9 @@ public class RunGame {
 
     while (game.getGameStatus() == GameStatus.ACTIVE) {
       start = startingPoint(game);
-      startPoints = startConverter(start);
+      startString = startConverter(start);
 
-      System.out.println("Your current position is: " + startPoints);
+      System.out.println("Your current position is: " + startString);
 
       String input = scanner.nextLine();
       if (!validInput(input)) {
