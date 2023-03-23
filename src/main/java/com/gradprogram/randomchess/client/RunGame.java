@@ -5,7 +5,6 @@ import com.gradprogram.randomchess.model.board.Board;
 import com.gradprogram.randomchess.model.board.Move;
 import com.gradprogram.randomchess.model.board.Point;
 import com.gradprogram.randomchess.model.piece.Piece;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,12 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 public class RunGame {
 
   private static boolean inputValidator(String input) {
-     if (input.equals("resign")) {
+    if (input.equals("resign")) {
       return true;
-     }
-     if (input.length() != 2) {
+    }
+    if (input.length() != 2) {
       return false;
-     }
+    }
 
     char[] letterCoordinates = input.toCharArray();
     if ((int) letterCoordinates[0] < 97 || (int) letterCoordinates[0] > 104) {
@@ -36,21 +35,27 @@ public class RunGame {
   private static int[] coordinateConverter(String input) {
     char[] letterCoordinates = input.toCharArray();
 
-    int[] numberCoordinates = {letterCoordinates[0] - 97, Character.getNumericValue(letterCoordinates[1]) - 1};
+    int[] numberCoordinates = {letterCoordinates[0] - 97,
+        Character.getNumericValue(letterCoordinates[1]) - 1};
 
     return numberCoordinates;
-  };
+  }
+
+  ;
 
   private static String coordinateConverter(int x, int y) {
     char[] letterCoordinates = new char[2];
     letterCoordinates[0] = Character.toChars(x + 97)[0];
     letterCoordinates[1] = Character.toChars(y + 49)[0];
     return new String(letterCoordinates);
-  };
+  }
+
+  ;
 
   private static Piece randomPiece(Game game, Board board, boolean whiteToPlay) {
     List<Move> previousMoves = game.getMoves();
-    Move previousMove =  previousMoves.size() != 0 ? previousMoves.get(previousMoves.size() - 1) : null;
+    Move previousMove =
+        previousMoves.size() != 0 ? previousMoves.get(previousMoves.size() - 1) : null;
     List<Piece> candidatePieces = whiteToPlay ? board.whitePieces : board.blackPieces;
     List<Piece> validPieces = new ArrayList<>();
     Point startPoint;
@@ -80,7 +85,8 @@ public class RunGame {
     Point kingPoint;
     List<Piece> enemyPieces;
     List<Move> previousMoves = game.getMoves();
-    Move previousMove =  previousMoves.size() != 0 ? previousMoves.get(previousMoves.size() - 1) : null;
+    Move previousMove =
+        previousMoves.size() != 0 ? previousMoves.get(previousMoves.size() - 1) : null;
     if (game.isWhiteToPlay()) {
       kingPoint = board.getWhiteKing();
       enemyPieces = board.blackPieces;
@@ -89,7 +95,8 @@ public class RunGame {
       enemyPieces = board.whitePieces;
     }
     for (Piece piece : enemyPieces) {
-      if (board.isLegalMove(new Point(piece.getX(), piece.getY()), kingPoint, game.isWhiteToPlay(), previousMove, false)) {
+      if (board.isLegalMove(new Point(piece.getX(), piece.getY()), kingPoint, game.isWhiteToPlay(),
+          previousMove, false)) {
         return false;
       }
     }
@@ -112,6 +119,12 @@ public class RunGame {
     while (game.getGameStatus() == GameStatus.ACTIVE) {
       validMove = false;
 
+      if (game.getBoard().blackPieces.size() == 1 && game.getBoard().whitePieces.size() == 1) {
+        game.setGameStatus(GameStatus.STALEMATE);
+        System.out.println("Stalemate! Game is a draw.");
+        break;
+      }
+
       randomPiece = randomPiece(game, game.getBoard(), game.isWhiteToPlay());
       if (randomPiece == null) {
         if (isStalemate(game, game.getBoard())) {
@@ -128,7 +141,9 @@ public class RunGame {
       }
 
       while (!validMove) {
-        System.out.println("You must move: " + randomPiece.toString() + " on square: " + coordinateConverter(randomPiece.getX(), randomPiece.getY()));
+        System.out.println(
+            "You must move: " + randomPiece + " on square: " + coordinateConverter(
+                randomPiece.getX(), randomPiece.getY()));
 
         System.out.print("Enter next move: ");
         input = scanner.nextLine();
@@ -153,12 +168,12 @@ public class RunGame {
         start = new Point(randomPiece.getX(), randomPiece.getY());
         end = new Point(points[0], points[1]);
 
-        //disables random piece selction, for testing purposes
-        // char[] letterCoordinates = input.toCharArray();
-        // int[] points = {letterCoordinates[0] - 97, Character.getNumericValue(letterCoordinates[1]) - 1,
-        //   letterCoordinates[3] - 97, Character.getNumericValue(letterCoordinates[4]) - 1};
-        // start = new Point(points[0], points[1]);
-        // end = new Point(points[2], points[3]);
+//      disables random piece selction, for testing purposes
+//      char[] letterCoordinates = input.toCharArray();
+//      int[] points = {letterCoordinates[0] - 97, Character.getNumericValue(letterCoordinates[1]) - 1,
+//      letterCoordinates[3] - 97, Character.getNumericValue(letterCoordinates[4]) - 1};
+//      start = new Point(points[0], points[1]);
+//      end = new Point(points[2], points[3]);
 
         validMove = game.makeMove(start, end, scanner);
       }
