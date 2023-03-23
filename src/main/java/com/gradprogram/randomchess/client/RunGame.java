@@ -146,6 +146,7 @@ public class RunGame {
             game.setGameStatus(GameStatus.WHITE_WIN);
             System.out.println("\033[0;33mResignation! White wins!\033[0m");
           }
+          break;
         }
 
         points = coordinateConverter(input);
