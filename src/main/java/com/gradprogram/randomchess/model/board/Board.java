@@ -159,6 +159,9 @@ public class Board {
     }
 
     private boolean previousMovePawnTwoForward(Move previousMove) {
+        if (previousMove == null) {
+            return false;
+        }
         Piece piece = getPiece(previousMove.end());
         return piece instanceof Pawn && previousMove.twoForward();
     }
@@ -246,6 +249,10 @@ public class Board {
 
   private boolean notInCheck(Point king, Move previuousMove) {
     List<Piece> opponentPieces;
+    System.out.println(getPiece(king).isWhite() + previuousMove.toString());
+    if (king == null) {
+        return true;
+    }
     if (this.getPiece(king).isWhite()) {
       opponentPieces = blackPieces;
     } else {

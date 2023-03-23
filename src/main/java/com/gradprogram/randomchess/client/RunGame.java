@@ -22,6 +22,20 @@ public class RunGame {
     return numberCoordinates;
   };
 
+  private static String startConverter(Point point) {
+    List<Character> letters = new ArrayList<>();
+    letters.add('A');
+    letters.add('B');
+    letters.add('C');
+    letters.add('D');
+    letters.add('E');
+    letters.add('F');
+    letters.add('G');
+    letters.add('H');
+
+    return letters.get(point.x()).toString() + (point.y()) ;
+  };
+
   public static boolean validInput(String input) {
     input = input.toLowerCase();
     if (input.length() == 2) {
@@ -44,14 +58,12 @@ public class RunGame {
     }
     Collections.shuffle(currentPieces);
 
-    System.out.println(currentPieces.get(0));
 
     for (Piece currentPiece : currentPieces) {
       for (int x = 0; x < 8; x++) {
-        for (int y = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++) {
           Move previousMove =  game.getMoves().size() != 0 ? game.getMoves().get(game.getMoves().size() - 1) : null;
-          if (game.getBoard().isLegalMove(new Point(currentPiece.getX(),currentPiece.getY()), new Point(x,y), game.isWhiteToPlay(), previousMove)) {
-            System.out.println("HERE");
+          if ( (new Point(currentPiece.getX(),currentPiece.getY()) != new Point(x,y)) &&(game.getBoard().isLegalMove(new Point(currentPiece.getX(),currentPiece.getY()), new Point(x,y), game.isWhiteToPlay(), previousMove)) ) {
             return new Point(x,y);
           }
         }
@@ -65,6 +77,7 @@ public class RunGame {
   public static void startGame() {
     Point start, end;
     int[] points;
+    String startPoints;
 
     Game game = new Game();
     Scanner scanner = new Scanner(System.in);
@@ -73,6 +86,10 @@ public class RunGame {
 
     while (game.getGameStatus() == GameStatus.ACTIVE) {
       start = startingPoint(game);
+      startPoints = startConverter(start);
+
+      System.out.println("Your current position is: " + startPoints);
+
       String input = scanner.nextLine();
       if (!validInput(input)) {
         System.out.println("Please enter a valid block. Letter followed by a number, eg C2");
@@ -90,7 +107,9 @@ public class RunGame {
 
       points = coordinateConverter(input);
 
+
       end = new Point(points[0], points[1]);
+      System.out.println(end.toString());
       game.makeMove(start, end);
 
       game.getBoard().printBoard();
