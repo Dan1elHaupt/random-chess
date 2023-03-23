@@ -21,7 +21,7 @@ public class Knight extends Piece {
       }
       return false;
     }
-    return board.notInCheckAfterMove(start, end);
+    return board.notInCheckAfterMove(start, end, verbose);
   }
 
   @Override

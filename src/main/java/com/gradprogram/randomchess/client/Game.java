@@ -87,6 +87,13 @@ public class Game {
             promotion = scanner.next();
           }
         }
+        if (whiteToPlay) {
+          board.whitePieces.remove(board.getPiece(end));
+          board.whitePieces.add(promotedPiece);
+        } else {
+          board.blackPieces.remove(board.getPiece(end));
+          board.blackPieces.add(promotedPiece);
+        }
         board.getSquare(end).setPiece(promotedPiece);
       }
     }

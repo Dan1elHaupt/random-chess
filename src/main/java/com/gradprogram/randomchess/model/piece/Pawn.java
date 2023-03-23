@@ -25,14 +25,14 @@ public class Pawn extends Piece {
       if (Valid.legalVerticalMove(start, end)) {
         int diff = Math.abs(start.y() - end.y());
         if (diff == 1) {
-          return board.notInCheckAfterMove(start, end);
+          return board.notInCheckAfterMove(start, end, verbose);
         } else if (diff == 2) {
-          return inStartPosition(start) && board.notInCheckAfterMove(start, end);
+          return inStartPosition(start) && board.notInCheckAfterMove(start, end, verbose);
         } else {
           return false;
         }
       } else if (Valid.legalDiagonalMove(start, end)) {
-        return Math.abs(start.y() - end.y()) == 1 && board.notInCheckAfterMove(start, end);
+        return Math.abs(start.y() - end.y()) == 1 && board.notInCheckAfterMove(start, end, verbose);
       }
     }
     if (verbose) {

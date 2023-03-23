@@ -109,7 +109,6 @@ public class Board {
     }
 
     private boolean canKnightMove(Point start, Point end, boolean verbose) {
-//        TODO check logic
         Piece endLocationPiece = getPiece(end);
         if (endLocationPiece != null && (endLocationPiece.isWhite() == getPiece(start).isWhite())) {
           if (verbose) {
@@ -135,14 +134,13 @@ public class Board {
               }
               return false;
             }
-//                        TODO getcheck logic here - cant castle through check
             if (piecesInTheWay(start, end)) {
               if (verbose) {
                 log.info("Illegal move: cannot castle through other pieces.");
               }
                 return false;
             }
-            boolean piecesUnderAttack = Point.getBetween(start, end).map(point -> this.notInCheckAfterMove(start, point)).reduce(false, (a, b) -> a || b);
+            boolean piecesUnderAttack = Point.getBetween(start, end).map(point -> this.notInCheckAfterMove(start, point, verbose)).reduce(false, (a, b) -> a || b);
             if ( piecesUnderAttack) {
               if (verbose) {
                 log.info("Illegal move: cannot castle through check.");
@@ -154,7 +152,6 @@ public class Board {
     }
 
     private boolean canPawnMove(Point start, Point end, Move previousMove, boolean verbose) {
-        //TODO: add promotion logic?
         if (Valid.legalDiagonalMove(start, end)) {
             if (Math.abs(start.x() - end.x()) != 1) {
               if (verbose) {
@@ -187,7 +184,7 @@ public class Board {
                 return true;
             }
         } else {
-            return !piecesInTheWay(start, end) && getPiece(end) == null && this.notInCheckAfterMove(start, end);
+            return !piecesInTheWay(start, end) && getPiece(end) == null && this.notInCheckAfterMove(start, end, verbose);
         }
     }
 
@@ -208,7 +205,6 @@ public class Board {
     }
 
     private boolean canMove(Point start, Point end, boolean verbose) {
-//        TODO add check
         Piece endLocationPiece = getPiece(end);
         if ((endLocationPiece != null) && (endLocationPiece.isWhite() == getPiece(start).isWhite())) {
           if (verbose) {
@@ -242,7 +238,7 @@ public class Board {
     return squares[point.x()][point.y()];
   }
 
-  public boolean notInCheckAfterMove(Point start, Point end) {
+  public boolean notInCheckAfterMove(Point start, Point end, boolean verbose) {
     Point king;
 
     Move previousMove = new Move(start, end);
@@ -258,13 +254,13 @@ public class Board {
         this.setWhiteKing(end);
       }
       king = this.getWhiteKing();
-      blackPieces.remove(oldEndPiece);
+      // blackPieces.remove(oldEndPiece);
     } else {
       if (movedPiece instanceof King) {
         this.setBlackKing(end);
       }
       king = this.getBlackKing();
-      whitePieces.remove(oldEndPiece);
+      // whitePieces.remove(oldEndPiece);
     }
 
     movedPiece.setX(end.x());
@@ -272,7 +268,7 @@ public class Board {
     endSquare.setPiece(movedPiece);
     startSquare.setPiece(null);
 
-    boolean notInCheck = notInCheck(king, previousMove);
+    boolean notInCheck = notInCheck(king, previousMove, verbose);
 
     movedPiece.setX(start.x());
     movedPiece.setY(start.y());
@@ -284,21 +280,21 @@ public class Board {
         this.setWhiteKing(start);
       }
       if (oldEndPiece != null) {
-        blackPieces.add(oldEndPiece);
+        // blackPieces.add(oldEndPiece);
       }
     } else {
       if (movedPiece instanceof King) {
         this.setBlackKing(start);
       }
       if (oldEndPiece != null) {
-        whitePieces.add(oldEndPiece);
+        // whitePieces.add(oldEndPiece);
       }
     }
 
     return notInCheck;
   }
 
-  private boolean notInCheck(Point king, Move previuousMove) {
+  private boolean notInCheck(Point king, Move previuousMove, boolean verbose) {
     List<Piece> opponentPieces;
     if (this.getPiece(king).isWhite()) {
       opponentPieces = blackPieces;
@@ -310,7 +306,9 @@ public class Board {
       Point start = new Point(piece.getX(), piece.getY());
 
       if (this.isLegalMove(start, king, piece.isWhite(), previuousMove, false)) {
-        log.info("Illegal move: " + (this.getPiece(king).isWhite() ? "White in check" : "Black in check"));
+        if (verbose) {
+          System.out.println("Illegal move: " + (this.getPiece(king).isWhite() ? "White in check" : "Black in check"));
+        }
         return false;
       }
     }

@@ -24,7 +24,7 @@ public class King extends Piece {
     int xDiff = Math.abs(start.x() - end.x());
     int yDiff = Math.abs(start.y() - end.y());
     if (xDiff <= 1 && yDiff <= 1) {
-      return board.notInCheckAfterMove(start, end);
+      return board.notInCheckAfterMove(start, end, verbose);
     } else {
       if (!canCastle(end)) {
         if (verbose) {
@@ -32,7 +32,7 @@ public class King extends Piece {
         }
         return false;
       }
-      return board.notInCheckAfterMove(start, end);
+      return board.notInCheckAfterMove(start, end, verbose);
     }
   }
 
