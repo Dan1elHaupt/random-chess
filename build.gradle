@@ -21,9 +21,18 @@ configurations {
 
 repositories {
     mavenCentral()
+    google()
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'com.google.guava:guava:31.1-jre'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'junit', module: 'junit'
+    }
+}
+
+test {
+    useJUnitPlatform()
 }
