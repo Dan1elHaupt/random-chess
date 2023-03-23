@@ -266,7 +266,7 @@ public class Board {
       Point start = piece.getPoint();
 
       if (this.isLegalMove(start, king, piece.isWhite(), previuousMove)) {
-        log.info(this.getPiece(king).isWhite() ? "White in check" : "Black in check");
+//        log.info(this.getPiece(king).isWhite() ? "White in check" : "Black in check");
         return false;
       }
     }
