@@ -3,9 +3,7 @@ package com.gradprogram.randomchess.model.piece;
 import com.gradprogram.randomchess.model.board.Point;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Getter
 @Setter
 public class King extends Piece {
@@ -24,7 +22,7 @@ public class King extends Piece {
     int yDiff = Math.abs(start.y() - end.y());
     if ((xDiff > 1 || yDiff > 1) && !canCastle(end)) {
         if (verbose) {
-          log.info("Illegal king move.");
+          System.out.println("Illegal king move.");
         }
         return false;
     }

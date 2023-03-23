@@ -2,9 +2,7 @@ package com.gradprogram.randomchess.model.piece;
 
 import com.gradprogram.randomchess.model.board.Point;
 import com.gradprogram.randomchess.model.movement.Valid;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class Pawn extends Piece {
 
   private final int startY;
@@ -26,14 +24,20 @@ public class Pawn extends Piece {
         if (diff == 2) {
           return inStartPosition(start);
         } else {
-          return diff == 1;
+          if (diff != 1) {
+            if (verbose) {
+              System.out.println("Illegal pawn move.");
+            }
+            return false;
+          }
+          return true;
         }
       } else if (Valid.legalDiagonalMove(start, end)) {
         return Math.abs(start.y() - end.y()) == 1;
       }
     }
     if (verbose) {
-      log.info("Illegal pawn move.");
+      System.out.println("Illegal pawn move.");
     }
     return false;
   }

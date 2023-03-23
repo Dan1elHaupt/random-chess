@@ -1,9 +1,7 @@
 package com.gradprogram.randomchess.model.piece;
 
 import com.gradprogram.randomchess.model.board.Point;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class Knight extends Piece {
 
   public Knight(boolean white, int x, int y) {
@@ -16,7 +14,7 @@ public class Knight extends Piece {
     int yDiff = start.y() - end.y();
     if (Math.abs(xDiff * yDiff) != 2) {
       if (verbose) {
-        log.info("Illegal knight move.");
+        System.out.println("Illegal knight move.");
       }
       return false;
     }

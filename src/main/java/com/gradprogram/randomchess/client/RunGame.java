@@ -134,7 +134,7 @@ public class RunGame {
         input = scanner.nextLine();
 
         while (!inputValidator(input)) {
-          log.info("Input must be of the form: e4 (Moves a piece to square e4)");
+          System.out.println("Input must be of the form: e4 (Moves a piece to square e4)");
           input = scanner.nextLine();
         }
 

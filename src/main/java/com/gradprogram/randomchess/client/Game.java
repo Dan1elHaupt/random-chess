@@ -16,14 +16,12 @@ import com.gradprogram.randomchess.model.piece.Rook;
 import java.util.Scanner;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-@Slf4j
 public class Game {
 
   private Board board;
@@ -40,11 +38,11 @@ public class Game {
 
   public boolean makeMove(Point start, Point end, Scanner scanner) {
     if (start == null || end == null || !Valid.validSquareLocation(start) || !Valid.validSquareLocation(end)) {
-      log.info("Illegal move: start or end coordinates are invalid.");
+      System.out.println("Illegal move: start or end coordinates are invalid.");
       return false;
     }
     if (start.equals(end)) {
-      log.info("Illegal move: cannot move to the same square.");
+      System.out.println("Illegal move: cannot move to the same square.");
       return false;
     }
     Move previousMove =  moves.size() != 0 ? moves.get(moves.size() - 1) : null;
