@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Board {
 
-  private final Square[][] squares;
+  private final Piece[][] squares;
 
   public List<Piece> whitePieces;
 
@@ -34,7 +34,7 @@ public class Board {
   public Board() {
     whitePieces = new ArrayList<>();
     blackPieces = new ArrayList<>();
-    squares = new Square[8][8];
+    squares = new Piece[8][8];
 
     // White pieces
     whitePieces.add(new Rook(true, 0, 0));
@@ -60,14 +60,14 @@ public class Board {
       whitePieces.add(new Pawn(true, x, 1));
       blackPieces.add(new Pawn(false, x, 6));
 
-      squares[x][0] = new Square(whitePieces.get(x), x, 0);
-      squares[x][1] = new Square(whitePieces.get(x + 8), x, 1);
-      squares[x][2] = new Square(null, x, 2);
-      squares[x][3] = new Square(null, x, 3);
-      squares[x][4] = new Square(null, x, 4);
-      squares[x][5] = new Square(null, x, 5);
-      squares[x][6] = new Square(blackPieces.get(x + 8), x, 6);
-      squares[x][7] = new Square(blackPieces.get(x), x, 7);
+      squares[x][0] = whitePieces.get(x);
+      squares[x][1] = whitePieces.get(x + 8);
+      squares[x][2] = null;
+      squares[x][3] = null;
+      squares[x][4] = null;
+      squares[x][5] = null;
+      squares[x][6] = blackPieces.get(x + 8);
+      squares[x][7] = blackPieces.get(x);
     }
 
     whiteKing = new Point(4, 0);
@@ -79,7 +79,8 @@ public class Board {
       System.out.println("    ___ ___ ___ ___ ___ ___ ___ ___");
       System.out.print(y + 1 + " ");
       for (int x = 0; x < 8; x++) {
-        System.out.print(squares[x][y]);
+        String outpuString = squares[x][y] == null ? " |  " : " | " + squares[x][y];
+        System.out.print(outpuString);
       }
       System.out.println(" | ");
     }
@@ -122,14 +123,14 @@ public class Board {
 
     private boolean canKingMove(Point start, Point end, boolean verbose) {
         if (castlingMove(start, end)) {
-            if (squares[start.x()][start.y()].getPiece().isHasMoved()) {
+            if (squares[start.x()][start.y()].isHasMoved()) {
               if (verbose) {
                 log.info("Illegal move: cannot castle as your king has already moved.");
               }
               return false;
             }
             final int rookX = (end.x() == 2) ? 0 : 7;
-            if (!(squares[rookX][start.y()].getPiece() instanceof Rook) || (squares[rookX][start.y()].getPiece().isHasMoved())) {
+            if (!(squares[rookX][start.y()] instanceof Rook) || (squares[rookX][start.y()].isHasMoved())) {
               if (verbose) {
                 log.info("Illegal move: must have a rook that hasn't moved to castle to.");
               }
@@ -232,11 +233,11 @@ public class Board {
   }
 
   public Piece getPiece(Point point) {
-    return getSquare(point).getPiece();
+      return squares[point.x()][point.y()];
   }
 
-  public Square getSquare(Point point) {
-    return squares[point.x()][point.y()];
+  public void setPiece(Point point, Piece piece) {
+      squares[point.x()][point.y()] = piece;
   }
 
   public boolean notInCheckAfterMove(Point start, Point end, boolean verbose) {
@@ -244,51 +245,41 @@ public class Board {
 
     Move previousMove = new Move(start, end);
 
-    Square startSquare = this.getSquare(start);
-    Square endSquare = this.getSquare(end);
-
-    Piece movedPiece = startSquare.getPiece();
-    Piece oldEndPiece = endSquare.getPiece();
+    Piece movedPiece = getPiece(start);
+    Piece oldEndPiece = getPiece(end);
 
     if (movedPiece.isWhite()) {
       if (movedPiece instanceof King) {
         this.setWhiteKing(end);
       }
       king = this.getWhiteKing();
-      // blackPieces.remove(oldEndPiece);
     } else {
       if (movedPiece instanceof King) {
         this.setBlackKing(end);
       }
       king = this.getBlackKing();
-      // whitePieces.remove(oldEndPiece);
     }
 
     movedPiece.setX(end.x());
     movedPiece.setY(end.y());
-    endSquare.setPiece(movedPiece);
-    startSquare.setPiece(null);
+
+    setPiece(end, movedPiece);
+    setPiece(start, null);
 
     boolean notInCheck = notInCheck(king, previousMove, verbose);
 
     movedPiece.setX(start.x());
     movedPiece.setY(start.y());
-    startSquare.setPiece(movedPiece);
-    endSquare.setPiece(oldEndPiece);
+    setPiece(start, movedPiece);
+    setPiece(end, oldEndPiece);
 
     if (movedPiece.isWhite()) {
       if (movedPiece instanceof King) {
         this.setWhiteKing(start);
       }
-      if (oldEndPiece != null) {
-        // blackPieces.add(oldEndPiece);
-      }
     } else {
       if (movedPiece instanceof King) {
         this.setBlackKing(start);
-      }
-      if (oldEndPiece != null) {
-        // whitePieces.add(oldEndPiece);
       }
     }
 

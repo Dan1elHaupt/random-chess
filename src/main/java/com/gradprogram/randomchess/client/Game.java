@@ -93,7 +93,7 @@ public class Game {
           board.blackPieces.remove(board.getPiece(end));
           board.blackPieces.add(promotedPiece);
         }
-        board.getSquare(end).setPiece(promotedPiece);
+        board.setPiece(end, promotedPiece);
       }
     }
 
@@ -106,7 +106,7 @@ public class Game {
   }
 
   private void updatePieceList(Point end) {
-    Piece takenPiece = board.getSquare(end).getPiece();
+    Piece takenPiece = board.getPiece(end);
     if (takenPiece != null) {
       if (whiteToPlay) {
         board.blackPieces.remove(takenPiece);
@@ -118,8 +118,8 @@ public class Game {
 
   private void movePieces(Point start, Point end) {
     board.getPiece(start).setHasMoved(true);
-    board.getSquare(end).setPiece(board.getPiece(start));
-    board.getSquare(start).setPiece(null);
+    board.setPiece(end, board.getPiece(start));
+    board.setPiece(start, null);
     board.getPiece(end).setX(end.x());
     board.getPiece(end).setY(end.y());
   }
@@ -142,28 +142,28 @@ public class Game {
         Piece rook = board.getPiece(rookPoint);
         rook.setHasMoved(true);
         rook.setX(5);
-        board.getSquare(new Point(5, start.y())).setPiece(rook);
-        board.getSquare(rookPoint).setPiece(null);
+        board.setPiece(new Point(5, start.y()), rook);
+        board.setPiece(rookPoint, null);
       } else if (end.x() == 1) {
         Point rookPoint = new Point(0, start.y());
         Piece rook = board.getPiece(rookPoint);
         rook.setHasMoved(true);
         rook.setX(2);
-        board.getSquare(new Point(2, start.y())).setPiece(rook);
-        board.getSquare(rookPoint).setPiece(null);
+        board.setPiece(new Point(2, start.y()), rook);
+        board.setPiece(rookPoint, null);
       }
     }
   }
 
   private void handleEnPassant(Point start, Point end, Move previousMove) {
     if (board.enPassantMove(start, end, previousMove)) {
-      Piece taken = board.getSquare(new Point(end.x(), start.y())).getPiece();
+      Piece taken = board.getPiece(new Point(end.x(), start.y()));
       if (taken.isWhite()) {
         board.whitePieces.remove(taken);
       } else {
         board.blackPieces.remove(taken);
       }
-      board.getSquare(new Point(end.x(), start.y())).setPiece(null);
+      board.setPiece(new Point(end.x(), start.y()), null);
     }
   }
 
