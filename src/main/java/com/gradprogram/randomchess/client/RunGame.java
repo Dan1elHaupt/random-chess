@@ -8,6 +8,24 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RunGame {
 
+  private static boolean inputValidator(String input) {
+     if (input.equals("resign")) {
+      return true;
+     }
+     if (input.length() != 5) {
+      return false;
+     }
+
+    char[] letterCoordinates = input.toCharArray();
+    if ((int) letterCoordinates[0] < 97 || (int) letterCoordinates[0] > 104 || (int) letterCoordinates[3] < 97 || (int) letterCoordinates[3] > 104) {
+      return false;
+    }
+    if ((int) letterCoordinates[1] < 49 || (int) letterCoordinates[1] > 56 || (int) letterCoordinates[4] < 49 || (int) letterCoordinates[4] > 56) {
+      return false;
+    }
+    return true;
+  }
+
   private static int[] stringToCoordinate(String input) {
     char[] letterCoordinates = input.toCharArray();
 
