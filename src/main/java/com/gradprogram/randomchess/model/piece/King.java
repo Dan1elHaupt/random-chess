@@ -28,7 +28,7 @@ public class King extends Piece {
     if (xDiff <= 1 && yDiff <= 1) {
       return board.notInCheckAfterMove(start, end);
     } else {
-      return canCastle(end);
+      return canCastle(end) && board.notInCheckAfterMove(start, end);
     }
   }
 

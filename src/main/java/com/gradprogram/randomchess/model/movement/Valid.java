@@ -13,7 +13,7 @@ public class Valid {
     }
 
     public static boolean legalVerticalMove(int startX, int endX, int startY, int endY) {
-        return startX == endX;
+        return startX == endX && startY != endY;
     }
 
     public static boolean legalVerticalMove(Point start, Point end) {
@@ -21,7 +21,7 @@ public class Valid {
     }
 
     public static boolean legalHorizontalMove(int startX, int endX, int startY, int endY) {
-        return startY == endY;
+        return startY == endY && startX != endX;
     }
 
     public static boolean legalHorizontalMove(Point start, Point end) {
@@ -29,7 +29,7 @@ public class Valid {
     }
 
     public static boolean legalDiagonalMove(int startX, int endX, int startY, int endY) {
-        return Math.abs(startX - endX) == Math.abs(startY - endY);
+        return Math.abs(startX - endX) == Math.abs(startY - endY) && startX - endX != 0;
     }
 
     public static boolean legalDiagonalMove(Point start, Point end) {

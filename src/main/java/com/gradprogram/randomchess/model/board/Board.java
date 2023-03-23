@@ -125,7 +125,8 @@ public class Board {
                 return false;
             }
 //                        TODO getcheck logic here
-            if (piecesInTheWay(start, end)) {
+            boolean piecesUnderAttack = Point.getBetween(start, end).map(point -> this.notInCheckAfterMove(start, point)).reduce(false, (a, b) -> a || b);
+            if (piecesInTheWay(start, end) || piecesUnderAttack) {
                 return false;
             }
         }
