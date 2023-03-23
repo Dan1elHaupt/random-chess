@@ -187,8 +187,7 @@ public class Board {
                 return true;
             }
         } else {
-            return canMove(start, end, verbose);
-//            TODO add check in here
+            return !piecesInTheWay(start, end) && getPiece(end) == null && this.notInCheckAfterMove(start, end);
         }
     }
 
