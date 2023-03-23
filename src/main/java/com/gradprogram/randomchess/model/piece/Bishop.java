@@ -13,14 +13,14 @@ public class Bishop extends Piece {
   }
 
   @Override
-  public boolean legalMovePattern( Point start, Point end, Board board, boolean verbose) {
+  public boolean legalMovePattern( Point start, Point end, boolean verbose) {
     if (!Valid.legalDiagonalMove(start, end)) {
       if (verbose) {
         log.info("Illegal bishop move.");
       }
       return false;
     }
-    return board.notInCheckAfterMove(start, end, verbose);
+    return true;
   }
 
   @Override

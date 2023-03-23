@@ -93,8 +93,7 @@ public class Board {
             }
             return false;
         }
-
-        if (startingPiece.legalMovePattern(start, end, this, verbose)) {
+        if (startingPiece.legalMovePattern(start, end, verbose) && notInCheckAfterMove(start, end, verbose)) {
             if (startingPiece instanceof King) {
                 return canKingMove(start, end, verbose);
             } else if (startingPiece instanceof Pawn) {

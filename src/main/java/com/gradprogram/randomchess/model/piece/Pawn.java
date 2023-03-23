@@ -20,19 +20,19 @@ public class Pawn extends Piece {
   }
 
   @Override
-  public boolean legalMovePattern(Point start, Point end, Board board, boolean verbose) {
+  public boolean legalMovePattern(Point start, Point end, boolean verbose) {
     if (isAMoveForward(start, end)) {
       if (Valid.legalVerticalMove(start, end)) {
         int diff = Math.abs(start.y() - end.y());
         if (diff == 1) {
-          return board.notInCheckAfterMove(start, end, verbose);
+          return true;
         } else if (diff == 2) {
-          return inStartPosition(start) && board.notInCheckAfterMove(start, end, verbose);
+          return inStartPosition(start);
         } else {
           return false;
         }
       } else if (Valid.legalDiagonalMove(start, end)) {
-        return Math.abs(start.y() - end.y()) == 1 && board.notInCheckAfterMove(start, end, verbose);
+        return Math.abs(start.y() - end.y()) == 1;
       }
     }
     if (verbose) {

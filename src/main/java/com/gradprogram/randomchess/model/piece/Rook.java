@@ -13,14 +13,14 @@ public class Rook extends Piece {
   }
 
   @Override
-  public boolean legalMovePattern(Point start, Point end, Board board, boolean verbose) {
+  public boolean legalMovePattern(Point start, Point end, boolean verbose) {
     if (!Valid.legalHorizontalOrVerticalMove(start, end)) {
       if (verbose) {
         log.info("Illegal rook move.");
       }
       return false;
     }
-    return board.notInCheckAfterMove(start, end, verbose);
+    return true;
   }
 
   @Override
