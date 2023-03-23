@@ -142,6 +142,13 @@ public class Board {
               }
                 return false;
             }
+            boolean piecesUnderAttack = Point.getBetween(start, end).map(point -> this.notInCheckAfterMove(start, point)).reduce(false, (a, b) -> a || b);
+            if ( piecesUnderAttack) {
+              if (verbose) {
+                log.info("Illegal move: cannot castle through check.");
+              }
+                return false;
+            }
         }
         return canMove(start, end, verbose);
     }

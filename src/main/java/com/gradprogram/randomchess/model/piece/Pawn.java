@@ -27,12 +27,12 @@ public class Pawn extends Piece {
         if (diff == 1) {
           return board.notInCheckAfterMove(start, end);
         } else if (diff == 2) {
-          return ((inStartPosition(start)) && (board.notInCheckAfterMove(start, end)));
+          return inStartPosition(start) && board.notInCheckAfterMove(start, end);
         } else {
           return false;
         }
       } else if (Valid.legalDiagonalMove(start, end)) {
-        return ((Math.abs(start.y() - end.y()) == 1) && board.notInCheckAfterMove(start, end));
+        return Math.abs(start.y() - end.y()) == 1 && board.notInCheckAfterMove(start, end);
       }
     }
     if (verbose) {
